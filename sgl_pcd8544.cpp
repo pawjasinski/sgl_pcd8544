@@ -15,12 +15,12 @@ SGLPCD8544::SGLPCD8544(PinName DC, PinName CE, PinName RST, PinName BL): SGL(LCD
     init();
     clear_buffer();
     set_bias(0x03);
-    set_contrast(60);
+    set_contrast(50);
 }
 
 void SGLPCD8544:: init() {
     spi.format(LCD_SPI_BITS, LCD_SPI_MODE);
-    spi.frequency(4000000);
+    spi.frequency(LCD_SPI_CLOCK);
 
     send_command(LCD_BASICFUNCTION);
     send_command(LCD_DISPLAYCONTROL | LCD_DISPLAYNORMAL);
@@ -56,7 +56,7 @@ void SGLPCD8544::send_command(uint8_t cmd) {
     ce.write(1);
 }
 
-void SGLPCD8544::draw_pixel(uint8_t x, uint8_t y, uint8_t color, Mode mode) {
+void SGLPCD8544::draw_pixel(uint16_t x, uint16_t y, uint16_t color, Mode mode) {
     if( x >= LCD_WIDTH || y >= LCD_HEIGHT) {
         return;
     }
@@ -115,7 +115,7 @@ void SGLPCD8544::set_bias(uint8_t b) {
     bias = b;
 
     send_command(LCD_BASICFUNCTION | LCD_EXTENDEDINSTRUCTION);
-    send_command(LCD_SETVOP | b);
+    send_command(LCD_SETBIAS | b);
     send_command(LCD_BASICFUNCTION);
 }
 

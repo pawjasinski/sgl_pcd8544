@@ -18,8 +18,8 @@ GND - masa
 #define LCD_SPI_BITS 0x08
 #define LCD_SPI_MODE 0x00
 
-#define BLACK 0         // pixel off
-#define WHITE 1         // pixel on
+#define BLACK 0xFFFF         // pixel off
+#define WHITE 0x0000         // pixel on
 #define FILL 1          // fill
 #define NONFILL 0       // non fill
 
@@ -48,7 +48,7 @@ GND - masa
 #define LCD_SETBIAS 0x10        // set bias // should be 3
 #define LCD_SETVOP 0x80         // Write Vop to register
 
-#define LCD_SPI_CLOCK_DIV SPI_CLOCK_DIV4    // Default to max SPI clock speed for PCD8544 of 4 mhz (16mhz / 4) for normal Arduinos.
+#define LCD_SPI_CLOCK 4000000    // Default to max SPI clock speed for PCD8544 of 4 mhz
 
 #define lcd_bytes = 504
 
@@ -61,7 +61,7 @@ public:
     void reset();
     void send_data(uint8_t data);
     void send_command(uint8_t cmd);
-    void draw_pixel(uint8_t x, uint8_t y, uint8_t color, Mode mode = Mode::pixel_copy);
+    void draw_pixel(uint16_t x, uint16_t y, uint16_t color = BLACK, Mode mode = Mode::pixel_copy) override;
     uint8_t get_pixel(uint8_t x, uint8_t y);
     void display();
 
