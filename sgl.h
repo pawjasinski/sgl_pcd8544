@@ -33,6 +33,7 @@ enum class Fill: uint8_t {
     void draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color = BLACK, Fill fill = Fill::hole, Mode mode = Mode::pixel_copy);
     void draw_triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
                         uint16_t color = BLACK, Fill fill = Fill::hole, Mode mode = Mode::pixel_copy);
+    void draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color = BLACK, Fill fill = Fill::hole, Mode mode = Mode::pixel_copy);
 
 protected:
     uint16_t _width;
