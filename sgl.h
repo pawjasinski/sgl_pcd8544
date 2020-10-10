@@ -29,7 +29,7 @@ enum class Fill: uint8_t {
     virtual void draw_pixel(uint16_t x, uint16_t y, uint16_t color = BLACK, Mode mode = Mode::pixel_copy) = 0;
     void draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color = BLACK, Mode mode = Mode::pixel_copy);
     void draw_horizontal_line(uint16_t x, uint16_t y, int16_t len, uint16_t color = BLACK, Mode mode = Mode::pixel_copy);
-    void draw_vertival_line(uint16_t x, uint16_t y, int16_t len, uint16_t color = BLACK, Mode mode = Mode::pixel_copy);
+    void draw_vertical_line(uint16_t x, uint16_t y, int16_t len, uint16_t color = BLACK, Mode mode = Mode::pixel_copy);
     void draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color = BLACK, Fill fill = Fill::hole, Mode mode = Mode::pixel_copy);
     void draw_triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
                         uint16_t color = BLACK, Fill fill = Fill::hole, Mode mode = Mode::pixel_copy);

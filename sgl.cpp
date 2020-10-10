@@ -11,6 +11,11 @@
 
 
 void SGL::draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color, Mode mode) {
+    if(x0 >= _width)  x0 = _width - 1;
+    if(x1 >= _width)  x1 = _width - 1;
+    if(y0 >= _height) y0 = _height - 1;
+    if(y1 >= _height) y1 = _height - 1;
+    
     int16_t dx = abs(x1 - x0);
     int16_t dy = abs(y1 - y0);
 
@@ -19,7 +24,7 @@ void SGL::draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t
         return;
     }
     if (dx == 0) {
-        draw_vertival_line(x0, y0, (y1 - y0), color, mode);
+        draw_vertical_line(x0, y0, (y1 - y0), color, mode);
         return;
     }
 
@@ -53,6 +58,8 @@ void SGL::draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t
 }
 
 void SGL::draw_horizontal_line(uint16_t x, uint16_t y, int16_t len, uint16_t color, Mode mode) {
+    if(x >= _width)  x = _width - 1;
+    if(y >= _height)  y = _height - 1;
     int16_t i = 0;
     if(len > 0) {
         for(; i <= len; ++i)
@@ -64,7 +71,9 @@ void SGL::draw_horizontal_line(uint16_t x, uint16_t y, int16_t len, uint16_t col
     }
 }
 
-void SGL::draw_vertival_line(uint16_t x, uint16_t y, int16_t len, uint16_t color, Mode mode) {
+void SGL::draw_vertical_line(uint16_t x, uint16_t y, int16_t len, uint16_t color, Mode mode) {
+    if(x >= _width)  x = _width - 1;
+    if(y >= _height)  y = _height - 1;
     int16_t i = 0;
     if(len > 0) {
         for(; i != len; ++i)
@@ -77,13 +86,17 @@ void SGL::draw_vertival_line(uint16_t x, uint16_t y, int16_t len, uint16_t color
 }
 
 void SGL::draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color, Fill fill, Mode mode) {
+    if(x0 >= _width)  x0 = _width - 1;
+    if(x1 >= _width)  x1 = _width - 1;
+    if(y0 >= _height) y0 = _height - 1;
+    if(y1 >= _height) y1 = _height - 1;
     int16_t dx = x1 - x0;
     int16_t dy = y1 - y0;
     uint16_t tx;
     uint16_t ty;
 
     if(dx == 0) {
-        draw_vertival_line(x0, y0, dy);
+        draw_vertical_line(x0, y0, dy);
         return;
     }
     if(dy == 0) {
@@ -104,7 +117,7 @@ void SGL::draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uin
     }
 
     if(dx < 0 && dy < 0) {
-        tx = x1
+        tx = x1;
         ty = y1;
         x1 = x0;
         y1 = y0;
@@ -122,7 +135,7 @@ void SGL::draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uin
         draw_line(x1, y0, x1, y1, color, mode);
     }
     else if(fill == Fill::solid) {
-        for(uint16_t i = y0; i <= dy; ++i ) {
+        for(uint16_t i = 0; i <= dy; ++i ) {
             draw_horizontal_line(x0, y0 + i, dx, color, mode);
         }
     }
@@ -130,6 +143,13 @@ void SGL::draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uin
 
 void SGL::draw_triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
                                             uint16_t color, Fill fill, Mode mode) {
+    if(x0 >= _width)  x0 = _width - 1;
+    if(x1 >= _width)  x1 = _width - 1;
+    if(x2 >= _width)  x2 = _width - 1;
+    if(y0 >= _height) y0 = _height - 1;
+    if(y1 >= _height) y1 = _height - 1;
+    if(y2 >= _height) y2 = _height - 1;
+
     if(fill == Fill::hole) {
         draw_line(x0, y0, x1, y1, color, mode);
         draw_line(x0, y0, x2, y2, color, mode);
@@ -214,91 +234,40 @@ void SGL::draw_triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint
     }
 }
 
-void draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color, Fill fill, Mode mode) {
-    if (fill == Fill::hole) {
-        if (!radius) {
-            draw_pixel(x0, y0, color, mode);
-            return;
+void SGL::draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color, Fill fill, Mode mode) {
+    //if(x0 >= _width)  x0 = _width - 1;
+    //if(y0 >= _height) y0 = _height - 1;
+    // from http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+    int16_t x = radius;
+    int16_t y = 0;
+    int16_t radiusError = 1-x;
+
+    while(x >= y) {
+
+        // if transparent, just draw outline
+        if (fill == Fill::hole) {
+            draw_pixel( x + x0,  y + y0, color, mode);
+            draw_pixel(-x + x0,  y + y0, color, mode);
+            draw_pixel( y + x0,  x + y0, color, mode);
+            draw_pixel(-y + x0,  x + y0, color, mode);
+            draw_pixel(-y + x0, -x + y0, color, mode);
+            draw_pixel( y + x0, -x + y0, color, mode);
+            draw_pixel( x + x0, -y + y0, color, mode);
+            draw_pixel(-x + x0, -y + y0, color, mode);
+        } else {  // drawing filled circle, so draw lines between points at same y value
+
+            draw_line(x+x0,  y+y0, -x+x0,  y+y0, color, mode);
+            draw_line(y+x0,  x+y0, -y+x0,  x+y0, color, mode);
+            draw_line(y+x0, -x+y0, -y+x0, -x+y0, color, mode);
+            draw_line(x+x0, -y+y0, -x+x0, -y+y0, color, mode);
         }
-
-        // draw the pixels in the cardinal directions
-        draw_pixel(x0 + radius, y0, color, mode);
-        draw_pixel(x0 - radius, y0, color, mode);
-        draw_pixel(x0, y0 + radius, color, mode);
-        draw_pixel(xo, y0 - radius, color, mode);
-
-        uint8_t x = radius; // start at the cardinal points of the circle
-        uint8_t y = 1;
-        int8_t dx = 3 - (2 * radius);
-        int8_t dy = 1;
-        int8_t err = 1; // difference of true radius squared and expected radius squared
-
-        if (2 + dx > 0) {
-            x--;
-            err += dx;
-            dx += 2;
-        }
-
-        while (x > y) {
-            // draw each octant
-            draw_pixel(x0 + x, y0 + y, color, mode);
-            draw_pixel(x0 + x, y0 - y, color, mode);
-            draw_pixel(x0 - x, y0 + y, color, mode);
-            draw_pixel(x0 - x, y0 - y, color, mode);
-            draw_pixel(x0 + y, y0 + x, color, mode);
-            draw_pixel(x0 + y, y0 - x, color, mode);
-            draw_pixel(x0 - y, y0 + x, color, mode);
-            draw_pixel(x0 - y, y0 - x, color, mode);
-
-            y++;
-            err += dy;
-            dy += 2;
-
-            if (2 * err + dx > 0) {
-                x--;
-                err += dx;
-                dx += 2;
-            }
-        }
-
-        //draw 45° pixels
-        draw_pixel(x0 + x, y0 + y, color, mode);
-        draw_pixel(x0 - x, y0 + y, color, mode);
-        draw_pixel(x0 + x, y0 - y, color, mode);
-        draw_pixel(x0 - x, y0 - y, color, mode);
-    }
-    esle if(fill == FILL::solid) {
-        if (!radius) {
-        draw_pixel(x0, y0, pattern, mode);
-        return;
-    }
-
-    draw_vertical_line(y0 - radius, y0 + radius, x0, color, mode);
-
-    uint16_t x = radius; // start at the cardinal points of the circle
-    uint16_t y = 1;
-    int16_t dx = 3 - (2 * radius);
-    int16_t dy = 1;
-    int16_t err = 1; // difference of true radius squared and expected radius squared
-
-    while (x > y) {
-        draw_vertical_line( y0 - x, y0 + x, x0 + y, color, mode);
-        ddraw_vertical_line(y0 - x, y0 + x, x0 - y, color, mode);
 
         y++;
-        err += dy;
-        dy += 2;
-
-        if (2 * err + dx > 0) {
+        if (radiusError<0) {
+            radiusError += 2 * y + 1;
+        } else {
             x--;
-            err += dx;
-            dx += 2;
-            draw_vertical_line(y0 - (y - 1), y0 + (y - 1), x0 + (x + 1), color, mode);
-            draw_vertical_line(y0 - (y - 1), y0 + (y - 1), x0 - (x + 1), pcolor, mode);
+            radiusError += 2 * (y - x) + 1;
         }
-    }
-
-    draw_vertical_line( y0 - y, y0 + y, x0 + x, color, mode);
-    ddraw_vertical_line(y0 - y, y0 + y, x0 - x, color, mode);
     }
 }   

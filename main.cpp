@@ -12,7 +12,13 @@ int main()
     display.backlight(false);
     ThisThread::sleep_for(500);
     display.backlight(true);
-    display.draw_vertival_line(10, 10, -5);
+    //display.draw_rectangle(10, 10, 0, 0);
+    //display.draw_rectangle(33, 47, 11, 11, BLACK, SGL::Fill::solid);
+    display.draw_circle(50, 20, 10, BLACK, SGL::Fill::solid);
+    //display.draw_triangle(1, 1, 60, 2, 40, 40, BLACK, SGL::Fill::hole);
     display.display();
+    while(true) {
+        ThisThread::sleep_for(1s);
+    }
 }
 

@@ -68,6 +68,10 @@ public:
     void set_contrast(uint8_t contr);
     void set_bias(uint8_t b);
     void clear_buffer();
+    void inverse_display();
+    void normal_display();
+    void all_pixel_on_display();
+    void all_pixel_off_display();
 
 protected:
     bool wrapText = true; // zawijaj tekst

@@ -21,15 +21,14 @@ SGLPCD8544::SGLPCD8544(PinName DC, PinName CE, PinName RST, PinName BL): SGL(LCD
 void SGLPCD8544:: init() {
     spi.format(LCD_SPI_BITS, LCD_SPI_MODE);
     spi.frequency(LCD_SPI_CLOCK);
-
-    send_command(LCD_BASICFUNCTION);
-    send_command(LCD_DISPLAYCONTROL | LCD_DISPLAYNORMAL);
+    normal_display();
 }
 
 void SGLPCD8544::reset() {
     rst.write(0);
     ThisThread::sleep_for(chrono::milliseconds(500));
     rst.write(1);
+    normal_display();
 }
 
 void SGLPCD8544::backlight(bool onoff) {
@@ -122,3 +121,24 @@ void SGLPCD8544::set_bias(uint8_t b) {
 void SGLPCD8544::clear_buffer() {
     memset(lcd_buffer, 0x00, 504);
 }
+
+void SGLPCD8544::inverse_display() {
+    send_command(LCD_BASICFUNCTION);
+    send_command(LCD_DISPLAYCONTROL | LCD_DISPLAYINVERTED);
+}
+
+void SGLPCD8544::normal_display() {
+    send_command(LCD_BASICFUNCTION);
+    send_command(LCD_DISPLAYCONTROL | LCD_DISPLAYNORMAL);
+}
+
+void SGLPCD8544::all_pixel_on_display() {
+    send_command(LCD_BASICFUNCTION);
+    send_command(LCD_DISPLAYCONTROL | LCD_DISPLAYALLON);
+}
+
+void SGLPCD8544::all_pixel_off_display() {
+    send_command(LCD_BASICFUNCTION);
+    send_command(LCD_DISPLAYCONTROL | LCD_DISPLAYBLANK);
+}
+
