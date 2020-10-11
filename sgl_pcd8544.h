@@ -15,6 +15,9 @@ GND - masa
 #include "mbed.h"
 #include "sgl.h"
 
+#define LCD_WIDTH 84    // lcd width
+#define LCD_HEIGHT 48   // lcd height
+
 #define LCD_SPI_BITS 0x08
 #define LCD_SPI_MODE 0x00
 
@@ -23,10 +26,8 @@ GND - masa
 #define FILL 1          // fill
 #define NONFILL 0       // non fill
 
-#define LCD_WIDTH 84    // lcd width
-#define LCD_HEIGHT 48   // lcd height
 #define LCD_BANKS 6     // banks of ram
-//#define LCD_BYTES 504   // size of lcd ram
+#define LCD_BYTES 504   // size of lcd ram
 
 #define LCD_POWERDOWN 0x04              // power down
 #define LCD_ENTRYMODE 0x02              // entry mode
@@ -55,14 +56,14 @@ GND - masa
 class SGLPCD8544: public SGL {
 public:
     //SGLPCD8544(uint8_t CLK, uint8_t DIN, uint8_t DC, uint8_t CE, uint8_t RST = 255, uint8_t BL = 255);
-    SGLPCD8544(PinName DC, PinName CE, PinName RST, PinName BL = NC);
+    SGLPCD8544(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK, PinName BL = NC);
     void backlight(bool onoff);
     void init();
     void reset();
     void send_data(uint8_t data);
     void send_command(uint8_t cmd);
     void draw_pixel(uint16_t x, uint16_t y, uint16_t color = BLACK, Mode mode = Mode::pixel_copy) override;
-    uint8_t get_pixel(uint8_t x, uint8_t y);
+    uint8_t get_pixel(uint16_t x, uint16_t y); // from the buffer, not from the LCD RAM!!!
     void display();
 
     void set_contrast(uint8_t contr);
@@ -84,7 +85,7 @@ protected:
     uint8_t contrast;
     uint8_t bias;
 
-    uint8_t lcd_buffer[504];
+    uint8_t lcd_buffer[LCD_BYTES];
 
     SPI spi;
 

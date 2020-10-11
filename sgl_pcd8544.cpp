@@ -10,12 +10,13 @@ SGLPCD8544::SGLPCD8544(uint8_t CLK, uint8_t DIN, uint8_t DC, uint8_t CE, uint8_t
 }*/
 
 // constructor for hardware SPI
-SGLPCD8544::SGLPCD8544(PinName DC, PinName CE, PinName RST, PinName BL): SGL(LCD_WIDTH, LCD_HEIGHT), dc(DC, 0), ce(CE, 1), rst(RST, 0), bl(BL, 0), spi(PA_7, PA_6, PA_5) {
+SGLPCD8544::SGLPCD8544(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK, PinName BL)
+                        : SGL(LCD_WIDTH, LCD_HEIGHT), dc(DC, 0), ce(CE, 1), rst(RST, 0), bl(BL, 0), spi(SPI_MOSI, SPI_MISO, SPI_SCK) {
     reset();
     init();
     clear_buffer();
     set_bias(0x03);
-    set_contrast(50);
+    set_contrast(60);
 }
 
 void SGLPCD8544:: init() {
@@ -80,7 +81,7 @@ void SGLPCD8544::draw_pixel(uint16_t x, uint16_t y, uint16_t color, Mode mode) {
     }
 }
 
-uint8_t SGLPCD8544::get_pixel(uint8_t x, uint8_t y) {
+uint8_t SGLPCD8544::get_pixel(uint16_t x, uint16_t y) {
     if ((x < 0) || (x >= LCD_WIDTH) || (y < 0) || (y >= LCD_HEIGHT))
     return 0;
 
