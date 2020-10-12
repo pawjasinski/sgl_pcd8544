@@ -85,6 +85,8 @@
 #define ILI9341_GREENYELLOW 0xAFE5 ///< 173, 255,  41
 #define ILI9341_PINK        0xFC18        ///< 255, 130, 198
 
+#define ILI9341_END_WRITE ce = 1;
+
 class SGLILI9341: public SGL {
 public:
     SGLILI9341(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK);
@@ -94,7 +96,7 @@ public:
     void draw_pixel(uint16_t x, uint16_t y, uint16_t color = BLACK, Mode mode = Mode::pixel_copy) override;
     void set_active_window(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
     void reset();
-    void reset2();
+    void end_write() { ce = 1; }
 //protected:
     bool wrapText = true; // zawijaj tekst
 
