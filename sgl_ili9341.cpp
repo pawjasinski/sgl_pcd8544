@@ -1,50 +1,49 @@
 #include "sgl_ili9341.h"
 
 SGLILI9341::SGLILI9341(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK)
-                        : SGL(LCD_WIDTH, LCD_HEIGHT), dc(DC, 0), ce(CE, 1), rst(RST, 0), spi(SPI_MOSI, SPI_MISO, SPI_SCK) {
+                        : SGL(LCD_WIDTH, LCD_HEIGHT), dc(DC, 1), ce(CE, 1), rst(RST, 0), spi(SPI_MOSI, SPI_MISO, SPI_SCK) {
     ;
 }
 
 void SGLILI9341::init() {
     spi.frequency(LCD_SPI_CLOCK);
+    spi.format(8, 3);
     reset();
 }
 
-void SGLILI9341::send_data(uint16_t data) {
+void SGLILI9341::send_data8(uint16_t data) {
+    dc.write(1); // stan na high dla przesylania danych
+    ce.write(0);
+    //spi.format(8, 3);
+    spi.write(data >> 8);
+    spi.write(data);
+}
+
+void SGLILI9341::send_data16(uint16_t data) {
     dc.write(1); // stan na high dla przesylania danych
     ce.write(0);
     spi.format(16, 3);
     spi.write(data);
-    ce = 1;
+    spi.format(8, 3);
 }
 
 void SGLILI9341::send_command(uint8_t cmd) {
+    spi.format(8, 3);
     dc.write(0); // ustalamy na low w celu przeslania komendy
     ce.write(0);
     spi.format(8, 3);
     spi.write(cmd);
+    dc.write(1);
 }
 
 void SGLILI9341::draw_pixel(uint16_t x, uint16_t y, uint16_t color, Mode mode) {
     if( x >= LCD_WIDTH || y >= LCD_HEIGHT) {
         return;
     }
-    //set_active_window(x, y, 1, 1);
-    send_command(ILI9341_CASET);
-    spi.write(x >> 8);
-    spi.write(x);
-    spi.write(x >> 8);
-    spi.write(x);
-    ILI9341_END_WRITE
-    send_command(ILI9341_PASET);
-    spi.write(y >> 8);
-    spi.write(y);
-    spi.write(y >> 8);
-    spi.write(y);
-    ILI9341_END_WRITE// koniec komendy / wysylanie danych na ten moment!!!!!
+    set_active_window(x, y, 1, 1);
 
     send_command(ILI9341_RAMWR);
-    send_data(color);
+    send_data8(color);
 }
 
 void SGLILI9341::set_active_window(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
@@ -65,7 +64,7 @@ void SGLILI9341::set_active_window(uint16_t x, uint16_t y, uint16_t w, uint16_t 
 
 void SGLILI9341::reset()
 {
-    ce = 1;                           // ce high
+    //ce = 1;                           // ce high
     dc = 1;                           // dc high 
     rst = 0;                        // display reset
 
