@@ -14,20 +14,29 @@ void SGLILI9341::init() {
 void SGLILI9341::send_data8(uint16_t data) {
     dc.write(1); // stan na high dla przesylania danych
     ce.write(0);
-    //spi.format(8, 3);
+    //spi.format(8, 3); // odkomentowac i sprawdzic wplyw na wydajnosc - wypelnianie calego ekranu kolorem
     spi.write(data >> 8);
     spi.write(data);
 }
 
-void SGLILI9341::send_data16(uint16_t data) {
+void SGLILI9341::send_data16(uint16_t data) {  // sprawdzic o ile wolniejsze (o ile wolniejsze) od send_data8
     dc.write(1); // stan na high dla przesylania danych
     ce.write(0);
     spi.format(16, 3);
     spi.write(data);
     spi.format(8, 3);
+
+    // lub mozna tak, tez przetestowac i sprawdzic wydajnosc, jesli nie bede uzywac 16 bitowego inrefejsu
+    // to zakomentowac spi.format(8,3) - dac tylko w konstruktorze
+    /*
+    spi.format(8,3);
+    spi.write(data >> 8);
+    spi.write(data);
+    */
+    
 }
 
-void SGLILI9341::send_command(uint8_t cmd) {
+void SGLILI9341::send_command8(uint8_t cmd) {
     spi.format(8, 3);
     dc.write(0); // ustalamy na low w celu przeslania komendy
     ce.write(0);
@@ -47,18 +56,22 @@ void SGLILI9341::draw_pixel(uint16_t x, uint16_t y, uint16_t color, Mode mode) {
 }
 
 void SGLILI9341::set_active_window(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-    send_command(ILI9341_CASET); // column address set
-    spi.write(x >> 8);
-    spi.write(x);
-    spi.write((x + w - 1) >> 8);
-    spi.write(x + w - 1);
+    send_command8(ILI9341_CASET); // column address set
+    send_data16(x);
+    //spi.write(x >> 8);
+    //spi.write(x);
+    send_data16(x + w - 1);
+    //spi.write((x + w - 1) >> 8);
+    //spi.write(x + w - 1);
     ILI9341_END_WRITE
 
-    send_command(ILI9341_PASET); // row address set
-    spi.write(y >> 8);
-    spi.write(y);
-    spi.write((y + h - 1) >> 8);
-    spi.write(y + h - 1);
+    send_command8(ILI9341_PASET); // row address 
+    send_data16(y);
+    //spi.write(y >> 8);
+    //spi.write(y);
+    send_data16(y + h - 1);
+    //spi.write((y + h - 1) >> 8);
+    //spi.write(y + h - 1);
     ILI9341_END_WRITE
 }
 

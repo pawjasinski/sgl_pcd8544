@@ -77,11 +77,11 @@ void SGL::draw_vertical_line(uint16_t x, uint16_t y, int16_t len, uint16_t color
     int16_t i = 0;
     if(len > 0) {
         for(; i != len; ++i)
-            draw_pixel(x, y + i);
+            draw_pixel(x, y + i, color, mode);
     }
     else if(len < 0) {
         for(; i != len; --i)
-            draw_pixel(x, y + i);
+            draw_pixel(x, y + i, color, mode);
     }
 }
 
