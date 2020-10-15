@@ -4,10 +4,11 @@
 #include "mbed.h"
 #include "sgl.h"
 
-#define LCD_WIDTH 128    // lcd width
-#define LCD_HEIGHT 64   // lcd height
+#define LCD_WIDTH 128 // lcd width
+#define LCD_HEIGHT 64 // lcd height
 
-class SGLILI9341: public SGL {
+class SGLILI9341 : public SGL
+{
     SGLILI9341(PinName DC, PinName CE, PinName RST, PinName BL = NC);
 };
 

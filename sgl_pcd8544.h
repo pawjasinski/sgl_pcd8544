@@ -15,45 +15,46 @@ GND - masa
 #include "mbed.h"
 #include "sgl.h"
 
-#define LCD_WIDTH 84    // lcd width
-#define LCD_HEIGHT 48   // lcd height
+#define LCD_WIDTH 84  // lcd width
+#define LCD_HEIGHT 48 // lcd height
 
 #define LCD_SPI_BITS 0x08
 #define LCD_SPI_MODE 0x00
 
-#define BLACK 0xFFFF         // pixel off
-#define WHITE 0x0000         // pixel on
-#define FILL 1          // fill
-#define NONFILL 0       // non fill
+#define BLACK 0xFFFF // pixel off
+#define WHITE 0x0000 // pixel on
+#define FILL 1       // fill
+#define NONFILL 0    // non fill
 
-#define LCD_BANKS 6     // banks of ram
-#define LCD_BYTES 504   // size of lcd ram
+#define LCD_BANKS 6   // banks of ram
+#define LCD_BYTES 504 // size of lcd ram
 
-#define LCD_POWERDOWN 0x04              // power down
-#define LCD_ENTRYMODE 0x02              // entry mode
-#define LCD_EXTENDEDINSTRUCTION 0x01    // extended instruction set
-#define LCD_BASICFUNCTION 0x20          // basic instruction set
+#define LCD_POWERDOWN 0x04           // power down
+#define LCD_ENTRYMODE 0x02           // entry mode
+#define LCD_EXTENDEDINSTRUCTION 0x01 // extended instruction set
+#define LCD_BASICFUNCTION 0x20       // basic instruction set
 
-#define LCD_DISPLAYBLANK 0x0            // blank
-#define LCD_DISPLAYNORMAL 0x4           // normal mode
-#define LCD_DISPLAYALLON 0x1            // all pixels on
-#define LCD_DISPLAYINVERTED 0x5         // all pixels inverted
+#define LCD_DISPLAYBLANK 0x0    // blank
+#define LCD_DISPLAYNORMAL 0x4   // normal mode
+#define LCD_DISPLAYALLON 0x1    // all pixels on
+#define LCD_DISPLAYINVERTED 0x5 // all pixels inverted
 
 // Basic instructions
-#define LCD_DISPLAYCONTROL 0x08     // set display configuration
-#define LCD_SETYADDR 0x40           // set y of ram 0 < y < 5
-#define LCD_SETXADDR 0x80           // set x of ram 0 < x < 83
+#define LCD_DISPLAYCONTROL 0x08 // set display configuration
+#define LCD_SETYADDR 0x40       // set y of ram 0 < y < 5
+#define LCD_SETXADDR 0x80       // set x of ram 0 < x < 83
 
 // extended instructions
-#define LCD_SETTEMP 0x04        // set lcd tem coefficient dafault 2
-#define LCD_SETBIAS 0x10        // set bias // should be 3
-#define LCD_SETVOP 0x80         // Write Vop to register
+#define LCD_SETTEMP 0x04 // set lcd tem coefficient dafault 2
+#define LCD_SETBIAS 0x10 // set bias // should be 3
+#define LCD_SETVOP 0x80  // Write Vop to register
 
-#define LCD_SPI_CLOCK 4000000    // Default to max SPI clock speed for PCD8544 of 4 mhz
+#define LCD_SPI_CLOCK 4000000 // Default to max SPI clock speed for PCD8544 of 4 mhz
 
 #define lcd_bytes = 504
 
-class SGLPCD8544: public SGL {
+class SGLPCD8544 : public SGL
+{
 public:
     //SGLPCD8544(uint8_t CLK, uint8_t DIN, uint8_t DC, uint8_t CE, uint8_t RST = 255, uint8_t BL = 255);
     SGLPCD8544(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK, PinName BL = NC);
@@ -88,11 +89,6 @@ protected:
     uint8_t lcd_buffer[LCD_BYTES];
 
     SPI spi;
-
 };
-
-
-
-
 
 #endif // __SGL_PCD8544_H_
