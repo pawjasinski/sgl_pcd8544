@@ -92,11 +92,8 @@ class SGLILI9341 : public SGL
 public:
     SGLILI9341(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK);
     void init();
-    void send_data8(uint16_t data);
-    void send_data16(uint16_t data);
-    void send_command8(uint8_t cmd);
-    // sprawdzic wydajnosc rysowania "tak jak jest", lub napisac wydajniejsze opcje(zeby np nie ustawiac za kazdym razem)
-    // aktywnego okna dla pojedynczego piksela
+    void send_data(uint16_t data);
+    void send_command(uint16_t cmd);
     void draw_pixel(uint16_t x, uint16_t y, uint16_t color = BLACK, Mode mode = Mode::pixel_copy) override;
     void set_active_window(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
     void reset();
@@ -110,8 +107,6 @@ public:
 
     uint8_t contrast;
     uint8_t bias;
-
-    uint8_t lcd_buffer[504];
 
     SPI spi;
 };
