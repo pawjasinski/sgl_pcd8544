@@ -1,13 +1,4 @@
 #include "sgl_pcd8544.h"
-/* constructor for software SPI
-SGLPCD8544::SGLPCD8544(uint8_t CLK, uint8_t DIN, uint8_t DC, uint8_t CE, uint8_t RST = -1, uint8_t BL = -1) {
-    uint8_t clk = CLK;
-    uint8_t din = DIN;
-    uint8_t dc = DC;
-    uint8_t ce = CE;
-    uint8_t rst = RST;
-    uint8_t bl = BL;
-}*/
 
 // constructor for hardware SPI
 SGLPCD8544::SGLPCD8544(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK, PinName BL)

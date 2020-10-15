@@ -3,6 +3,7 @@
 
 #include "mbed.h"
 #include "sgl.h"
+#include <cstdint>
 
 #define LCD_WIDTH 240  // lcd width
 #define LCD_HEIGHT 320 // lcd height
@@ -98,7 +99,11 @@ public:
     void set_active_window(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
     void reset();
     void end_write() { ce = 1; }
-    //protected:
+    void set_rotation(uint8_t rot);
+    void invert_display(bool invert);
+    void scroll_to(uint16_t h);
+    void set_scroll_margins(uint16_t top, uint16_t bottom);
+protected:
     bool wrapText = true; // zawijaj tekst
 
     DigitalOut dc;

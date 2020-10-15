@@ -12,9 +12,20 @@
 // main() runs in its own thread in the OS
 int main()
 {
-    ThisThread::sleep_for(1 s);
+    ThisThread::sleep_for(1s);
     SGLILI9341 display(PA_13, PA_14, PA_15, PC_12, PC_11, PC_10);
     display.init();
+    /*
+    for(int x = 50; x < 100; x++)
+    {
+        for(int y = 50; y < 100; y++)
+        {
+            display.draw_pixel(x, y, 0x7BE0);
+        }
+    }
+    //display.invert_display(true);
+    //display.scroll_to(200);
+*/
     while (true)
     {
         ThisThread::sleep_for(chrono::seconds(1));

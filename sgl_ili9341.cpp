@@ -1,7 +1,7 @@
 #include "sgl_ili9341.h"
 
 SGLILI9341::SGLILI9341(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK)
-    : SGL(LCD_WIDTH, LCD_HEIGHT), dc(DC, 1), ce(CE, 1), rst(RST, 0), spi(SPI_MOSI, SPI_MISO, SPI_SCK)
+    : SGL(LCD_WIDTH, LCD_HEIGHT), dc(DC, 1), ce(CE, 0), rst(RST, 0), spi(SPI_MOSI, SPI_MISO, SPI_SCK)
 {
     ;
 }
@@ -14,7 +14,7 @@ void SGLILI9341::init()
 }
 
 void SGLILI9341::send_data(uint16_t data)
-{                // sprawdzic o ile wolniejsze (o ile wolniejsze) od send_data
+{
     dc.write(1); // stan na high dla przesylania danych
     ce.write(0);
     spi.write(data);
@@ -42,11 +42,11 @@ void SGLILI9341::draw_pixel(uint16_t x, uint16_t y, uint16_t color, Mode mode)
 
 void SGLILI9341::set_active_window(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
-    send_command8(ILI9341_CASET); // column address set
+    send_command(ILI9341_CASET); // column address set
     send_data(x);
     send_data(x + w - 1);
 
-    send_command8(ILI9341_PASET); // row address
+    send_command(ILI9341_PASET); // row address
     send_data(y);
     send_data(y + h - 1);
 }
@@ -187,4 +187,26 @@ void SGLILI9341::reset()
 
     //wait_ms(100);
     ThisThread::sleep_for(chrono::milliseconds(100));
+}
+
+void SGLILI9341::set_rotation(uint8_t rot)
+{
+    ;
+}
+
+void SGLILI9341::invert_display(bool invert)
+{
+    send_command(invert ? ILI9341_INVON : ILI9341_INVOFF);
+}
+
+void SGLILI9341::scroll_to(uint16_t h)
+{
+    send_command(ILI9341_VSCRSADD);
+    send_data(h >> 8);
+    send_data(h & 255);
+}
+
+void SGLILI9341::set_scroll_margins(uint16_t top, uint16_t bottom)
+{
+    ;
 }
