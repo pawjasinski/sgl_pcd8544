@@ -1,0 +1,145 @@
+https://rop.nl/truetype2gfx/ - strona dla czcionek -- mozna by poszukac takich i sobie pobrac czcionki w formacie i rozmiarze jaki chce
+
+Funkcja konwertujaca kolor rgb 24(RGB888) BIT do 16(RGB565) bitowego hex
+#define RGB565(r,g,b) (((uint16_t)r & 0x00F8) << 8) | (((uint16_t)g & 0x00FC) << 3) | (((uint16_t)b & 0x00F8) >> 3)
+
+Mona uzyc w ten sposob
+
+#define WHITE       RGB565(255, 255, 255)
+#define BLACK       RGB565(  0,   0,   0)
+#define YELLOW      RGB565(255, 255,   0)
+
+
+FUNKCJA INICJALIZUJACA ILI9341 LCD
+
+void ili9341_init(void)
+{
+DC_OFF; // set pin 1
+RESET_OFF ; // set pin 1
+_delay_ms(1);
+RESET_ON ; // set pin 0
+_delay_ms(10);
+RESET_OFF ; // set pin 1
+_delay_ms(120);
+   
+
+sendCmd(ILI9341_CMD_POWER_ON_SEQ_CONTROL); //0xCB
+sendData(0x39);
+sendData(0x2C);
+sendData(0x00);
+sendData(0x34);
+sendData(0x02);
+
+sendCmd(ILI9341_CMD_POWER_CONTROL_B); //0xCF
+sendData(0x00);
+sendData(0xC1);
+sendData(0x30);
+
+sendCmd(ILI9341_CMD_DRIVER_TIMING_CONTROL_A); //0xE8
+sendData(0x85);
+sendData(0x00);
+sendData(0x78);
+
+sendCmd(ILI9341_CMD_DRIVER_TIMING_CONTROL_B); //0xEA
+sendData(0x00);
+sendData(0x00);
+
+sendCmd(0xED);
+sendData(0x64);
+sendData(0x03);
+sendData(0x12);
+sendData(0X81);
+
+sendCmd(ILI9341_CMD_PUMP_RATIO_CONTROL); //0xF7
+sendData(0x20);
+
+sendCmd(ILI9341_CMD_POWER_CONTROL_1); //0xC0
+sendData(0x1B);
+
+sendCmd(ILI9341_CMD_POWER_CONTROL_2); //0xC1
+sendData(0x10);
+
+sendCmd(ILI9341_CMD_VCOM_CONTROL_1); //0xC5
+sendData(0x2D);
+sendData(0x33);
+
+sendCmd(ILI9341_CMD_VCOM_CONTROL_2); //0xC7
+sendData(0xCF);
+
+sendCmd(ILI9341_CMD_MEMORY_ACCESS_CONTROL); //0x36
+sendData(0x48);
+
+sendCmd(ILI9341_CMD_COLMOD_PIXEL_FORMAT_SET); //0x3A
+sendData(0x55);
+
+sendCmd(ILI9341_CMD_FRAME_RATE_CONTROL_NORMAL); //0xB1
+sendData(0x00);
+sendData(0x1D);
+
+sendCmd(ILI9341_CMD_DISPLAY_FUNCTION_CONTROL); //0xB6
+sendData(0x08);
+sendData(0x82);
+sendData(0x27);
+
+sendCmd(ILI9341_CMD_ENABLE_3_GAMMA_CONTROL); //0xF2
+sendData(0x00);
+
+sendCmd(ILI9341_CMD_GAMMA_SET); //0x26
+sendData(0x1);
+
+sendCmd(ILI9341_CMD_POSITIVE_GAMMA_CORRECTION); //0xE0
+sendData(0x0F);
+sendData(0x31);
+sendData(0x2B);
+sendData(0x0C);
+sendData(0x0E);
+sendData(0x08);
+sendData(0x4E);
+sendData(0xF1);
+sendData(0x37);
+sendData(0x07);
+sendData(0x10);
+sendData(0x03);
+sendData(0x0E);
+sendData(0x09);
+sendData(0x00);
+
+sendCmd(ILI9341_CMD_NEGATIVE_GAMMA_CORRECTION); //0xE1
+sendData(0x00);
+sendData(0x0E);
+sendData(0x14);
+sendData(0x03);
+sendData(0x11);
+sendData(0x07);
+sendData(0x31);
+sendData(0xC1);
+sendData(0x48);
+sendData(0x08);
+sendData(0x0F);
+sendData(0x0C);
+sendData(0x31);
+sendData(0x36);
+sendData(0x0F);
+
+sendCmd(ILI9341_CMD_SLEEP_OUT); //0x11
+_delay_ms(120);
+sendCmd(ILI9341_CMD_DISPLAY_ON); //0x29
+
+setOrientation(PORTRAIT); //0x00
+bg(bgcolor); //BLACK
+}
+
+// Write a command to Display
+void sendCmd(uint8_t data){
+   DC_ON;        //Set the DC pin to low
+   SPI_send(data); 
+   DC_OFF;  //Set the DC pin to high
+}
+
+void sendData16(uint16_t data){
+    unsigned char data1 = data>>8;
+    unsigned char data2 = data&0xff;
+    DC_OFF; //Set the DC pin to high
+    SPI_send(data1);
+    SPI_send(data2);
+}

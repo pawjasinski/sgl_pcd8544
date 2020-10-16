@@ -1,4 +1,3 @@
-https://rop.nl/truetype2gfx/ - strona dla czcionek -- mozna by poszukac takich i sobie pobrac czcionki w formacie i rozmiarze jaki chce
 
 FONT CZCIONKA 84x48 LCD 5x5
 Nokia5110::font[480] = {

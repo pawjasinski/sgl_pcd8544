@@ -9,23 +9,37 @@ SGLILI9341::SGLILI9341(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, Pi
 void SGLILI9341::init()
 {
     spi.frequency(LCD_SPI_CLOCK);
-    spi.format(16, 3);
+    spi.format(8, 3);
     reset();
 }
-
+/*
 void SGLILI9341::send_data(uint16_t data)
 {
     dc.write(1); // stan na high dla przesylania danych
-    ce.write(0);
+    spi.write(data >> 8);
+    spi.write(data&0xff);
+}
+*/
+void SGLILI9341::send_data(uint16_t data)
+{
+    dc.write(1); // stan na high dla przesylania danych
+    //ce.write(0);
+    spi.write(data << 8);
     spi.write(data);
 }
 
-void SGLILI9341::send_command(uint16_t cmd)
+void SGLILI9341::send_command(uint8_t cmd)
 {
+    spi.format(8, 3);
     dc.write(0); // ustalamy na low w celu przeslania komendy
-    ce.write(0);
+    //ce.write(0);
     spi.write(cmd);
     dc.write(1);
+}
+
+void send_command_parameter(uint8_t param)
+{
+    spi.write(param);
 }
 
 void SGLILI9341::draw_pixel(uint16_t x, uint16_t y, uint16_t color, Mode mode)
@@ -209,4 +223,145 @@ void SGLILI9341::scroll_to(uint16_t h)
 void SGLILI9341::set_scroll_margins(uint16_t top, uint16_t bottom)
 {
     ;
+}
+
+void SGLILI9341::reset2()
+{
+    dc.write(1);
+    rst.write(1);
+    ThisThread::sleep_for(chrono::milliseconds(1));
+    rst.write(0);
+    ThisThread::sleep_for(chrono::milliseconds(10));
+    rst.write(1);
+    ThisThread::sleep_for(chrono::milliseconds(120));
+
+send_command(ILI9341_CMD_POWER_ON_SEQ_CONTROL); //0xCB
+send_command_parameter(0x39);
+send_command_parameter(0x2C);
+send_command_parameter(0x00);
+send_command_parameter(0x34);
+send_command_parameter(0x02);
+
+send_command(ILI9341_CMD_POWER_CONTROL_B); //0xCF
+send_command_parameter(0x00);
+send_command_parameter(0xC1);
+send_command_parameter(0x30);
+
+send_command(ILI9341_CMD_DRIVER_TIMING_CONTROL_A); //0xE8
+send_command_parameter(0x85);
+send_command_parameter(0x00);
+send_command_parameter(0x78);
+
+send_command(ILI9341_CMD_DRIVER_TIMING_CONTROL_B); //0xEA
+send_command_parameter(0x00);
+send_command_parameter(0x00);
+
+send_command(0xED);
+send_command_parameter(0x64);
+send_command_parameter(0x03);
+send_command_parameter(0x12);
+send_command_parameter(0X81);
+
+send_command(ILI9341_CMD_PUMP_RATIO_CONTROL); //0xF7
+send_command_parameter(0x20);
+
+send_command(ILI9341_CMD_POWER_CONTROL_1); //0xC0
+send_command_parameter(0x1B);
+
+send_command(ILI9341_CMD_POWER_CONTROL_2); //0xC1
+send_command_parameter(0x10);
+
+send_command(ILI9341_CMD_VCOM_CONTROL_1); //0xC5
+send_command_parameter(0x2D);
+send_command_parameter(0x33);
+
+send_command(ILI9341_CMD_VCOM_CONTROL_2); //0xC7
+send_command_parameter(0xCF);
+
+send_command(ILI9341_CMD_MEMORY_ACCESS_CONTROL); //0x36
+send_command_parameter(0x48);
+
+send_command(ILI9341_CMD_COLMOD_PIXEL_FORMAT_SET); //0x3A
+send_command_parameter(0x55);
+
+send_command(ILI9341_CMD_FRAME_RATE_CONTROL_NORMAL); //0xB1
+send_command_parameter(0x00);
+send_command_parameter(0x1D);
+
+send_command(ILI9341_CMD_DISPLAY_FUNCTION_CONTROL); //0xB6
+send_command_parameter(0x08);
+send_command_parameter(0x82);
+send_command_parameter(0x27);
+
+send_command(ILI9341_CMD_ENABLE_3_GAMMA_CONTROL); //0xF2
+send_command_parameter(0x00);
+
+send_command(ILI9341_CMD_GAMMA_SET); //0x26
+send_command_parameter(0x1);
+
+send_command(ILI9341_CMD_POSITIVE_GAMMA_CORRECTION); //0xE0
+send_command_parameter(0x0F);
+send_command_parameter(0x31);
+send_command_parameter(0x2B);
+send_command_parameter(0x0C);
+send_command_parameter(0x0E);
+send_command_parameter(0x08);
+send_command_parameter(0x4E);
+send_command_parameter(0xF1);
+send_command_parameter(0x37);
+send_command_parameter(0x07);
+send_command_parameter(0x10);
+send_command_parameter(0x03);
+send_command_parameter(0x0E);
+send_command_parameter(0x09);
+send_command_parameter(0x00);
+
+send_command(ILI9341_CMD_NEGATIVE_GAMMA_CORRECTION); //0xE1
+send_command_parameter(0x00);
+send_command_parameter(0x0E);
+send_command_parameter(0x14);
+send_command_parameter(0x03);
+send_command_parameter(0x11);
+send_command_parameter(0x07);
+send_command_parameter(0x31);
+send_command_parameter(0xC1);
+send_command_parameter(0x48);
+send_command_parameter(0x08);
+send_command_parameter(0x0F);
+send_command_parameter(0x0C);
+send_command_parameter(0x31);
+send_command_parameter(0x36);
+send_command_parameter(0x0F);
+
+send_command(ILI9341_CMD_SLEEP_OUT); //0x11
+ThisThread::sleep_for(chrono::milliseconds(120));
+send_command(ILI9341_CMD_DISPLAY_ON); //0x29
+
+/*
+lcdWriteCommand(FRAME_RATE_CONTROL1);
+    lcdWriteParameter(0x0E); // DIVA = 14
+    lcdWriteParameter(0x14); // VPA = 20
+    
+    lcdWriteCommand(DISPLAY_INVERSION);
+    lcdWriteParameter(0x07); // NLA = 1, NLB = 1, NLC = 1 (all on Frame Inversion)
+   
+    lcdWriteCommand(POWER_CONTROL1);
+    lcdWriteParameter(0x1F); // VRH = 31:  GVDD = 3,00V
+          
+    lcdWriteCommand(POWER_CONTROL2);
+    lcdWriteParameter(0x00); // BT = 0: AVDD = 2xVCI1, VCL = -1xVCI1, VGH = 4xVCI1, VGL = -3xVCI1
+
+    lcdWriteCommand(VCOM_CONTROL1);
+    lcdWriteParameter(0x24); // VMH = 36: VCOMH voltage = 3.4
+    lcdWriteParameter(0x64); // VML = 100: VCOML voltage = 0
+	
+    lcdWriteCommand(VCOM_OFFSET_CONTROL);
+    lcdWriteParameter(0x40); // nVM = 0, VMF = 64: VCOMH output = VMH, VCOML output = VML
+       	        
+	// Set the display to on
+    lcdWriteCommand(SET_DISPLAY_ON);
+*/
+
+//setOrientation(PORTRAIT); //0x00
+//bg(bgcolor); //BLACK
 }

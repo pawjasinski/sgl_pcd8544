@@ -94,10 +94,12 @@ public:
     SGLILI9341(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK);
     void init();
     void send_data(uint16_t data);
-    void send_command(uint16_t cmd);
+    void send_command(uint8_t cmd);
+    void send_command_parameter(uint8_t param);
     void draw_pixel(uint16_t x, uint16_t y, uint16_t color = BLACK, Mode mode = Mode::pixel_copy) override;
     void set_active_window(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
     void reset();
+    void reset2();
     void end_write() { ce = 1; }
     void set_rotation(uint8_t rot);
     void invert_display(bool invert);
