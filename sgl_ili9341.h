@@ -8,7 +8,7 @@
 #define LCD_WIDTH 240  // lcd width
 #define LCD_HEIGHT 320 // lcd height
 
-#define LCD_SPI_CLOCK 1000000 // Default to max SPI clock speed for PCD8544 of 10 mhz
+#define LCD_SPI_CLOCK 10000000 // Default to max SPI clock speed for PCD8544 of 10 mhz
 
 #define ILI9341_NOP 0x00     ///< No-op register
 #define ILI9341_SWRESET 0x01 ///< Software reset register
@@ -96,16 +96,19 @@ public:
     void send_data(uint16_t data);
     void send_command(uint8_t cmd);
     void send_command_parameter(uint8_t param);
-    void draw_pixel(uint16_t x, uint16_t y, uint16_t color = BLACK, Mode mode = Mode::pixel_copy) override;
-    void set_active_window(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+    void draw_pixel(uint16_t x, uint16_t y, uint16_t color = ILI9341_WHITE, Mode mode = Mode::pixel_copy) override;
+    void set_active_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+    void fill_screen(uint16_t color = WHITE);
+    // len is like x0 = x; x1 = x + len
+    void draw_horizontal_line(uint16_t x, uint16_t y, int16_t len, uint16_t color = ILI9341_WHITE, Mode mode = SGL::Mode::pixel_copy) override;
+    void draw_vertical_line(uint16_t x, uint16_t y, int16_t len, uint16_t color = ILI9341_WHITE, Mode mode = SGL::Mode::pixel_copy) override;
     void reset();
     void reset2();
-    void end_write() { ce = 1; }
     void set_rotation(uint8_t rot);
     void invert_display(bool invert);
     void scroll_to(uint16_t h);
     void set_scroll_margins(uint16_t top, uint16_t bottom);
-protected:
+//protected:
     bool wrapText = true; // zawijaj tekst
 
     DigitalOut dc;

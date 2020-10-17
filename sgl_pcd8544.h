@@ -21,8 +21,8 @@ GND - masa
 #define LCD_SPI_BITS 0x08
 #define LCD_SPI_MODE 0x00
 
-#define BLACK 0xFFFF // pixel off
-#define WHITE 0x0000 // pixel on
+#define BLACK 0x0000 // pixel on
+#define WHITE 0xFFFF // pixel off
 #define FILL 1       // fill
 #define NONFILL 0    // non fill
 
@@ -63,7 +63,7 @@ public:
     void reset();
     void send_data(uint8_t data);
     void send_command(uint8_t cmd);
-    void draw_pixel(uint16_t x, uint16_t y, uint16_t color = BLACK, Mode mode = Mode::pixel_copy) override;
+    void draw_pixel(uint16_t x, uint16_t y, uint16_t color = WHITE, Mode mode = Mode::pixel_copy) override;
     uint8_t get_pixel(uint16_t x, uint16_t y); // from the buffer, not from the LCD RAM!!!
     void display();
 

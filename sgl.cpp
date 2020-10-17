@@ -1,13 +1,5 @@
 #include "sgl.h"
-
-#ifndef _swap_int16_t
-#define _swap_int16_t(a, b) \
-    {                       \
-        int16_t t = a;      \
-        a = b;              \
-        b = t;              \
-    }
-#endif
+#include <cstdint>
 
 void SGL::draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color, Mode mode)
 {
@@ -328,5 +320,32 @@ void SGL::draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color,
             x--;
             radiusError += 2 * (y - x) + 1;
         }
+    }
+}
+
+void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color)
+{ // 95 max
+    x_cursor = x;
+    y_cursor = y;
+    for(int8_t i = 0; i < 6; ++i)
+    {
+        uint8_t ch = font5[6 * (c-32) + i];
+
+        for(int8_t b = 0; b < 8; ++b)
+        {
+            if(((ch >> b) % 2) == 1)
+                draw_pixel(x_cursor, y_cursor, color);
+            y_cursor++;
+        }
+        x_cursor++;
+        y_cursor = y;
+    }
+}
+
+void SGL::draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color) {
+    const char* ch = c;
+    for(; *ch != '\0'; ch++) {
+        draw_char(*ch, x, y);
+        x += 6;
     }
 }
