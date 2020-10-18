@@ -57,8 +57,10 @@ public:
     void draw_triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
                        uint16_t color = WHITE, Fill fill = Fill::hole, Mode mode = Mode::pixel_copy);
     void draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color = WHITE, Fill fill = Fill::hole, Mode mode = Mode::pixel_copy);
+    //void draw_char(char c, uint16_t x, uint16_t y, uint16_t color = WHITE, bool invert = false);
+    void set_font(char* font, uint16_t color = WHITE, bool invert = false, bool background = false, uint16_t color_bg = BLACK);
     void draw_char(char c, uint16_t x, uint16_t y, uint16_t color = WHITE);
-    void draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color = WHITE);
+    void draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color = WHITE, bool wrap = true);
 
 protected:
     uint16_t _width;

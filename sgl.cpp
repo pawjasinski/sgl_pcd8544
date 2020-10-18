@@ -1,5 +1,6 @@
 #include "sgl.h"
 #include <cstdint>
+#include <cstring>
 
 void SGL::draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color, Mode mode)
 {
@@ -324,16 +325,21 @@ void SGL::draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color,
 }
 
 void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color)
-{ // 95 max
+{ // c >=32 && c <=95
+    if(c < 32 || c > 126)
+    {
+        // draw_rectangle(x, y, x + 6, y + 7, WHITE, Fill::solid);
+        return;
+    }
     x_cursor = x;
     y_cursor = y;
     for(int8_t i = 0; i < 6; ++i)
     {
         uint8_t ch = font5[6 * (c-32) + i];
 
-        for(int8_t b = 0; b < 8; ++b)
+        for(int8_t b = 0; b < 7; ++b)
         {
-            if(((ch >> b) % 2) == 1)
+            if(((ch >> b) % 2) == 1) // == 0 or != 1 means text inverted
                 draw_pixel(x_cursor, y_cursor, color);
             y_cursor++;
         }
@@ -342,10 +348,9 @@ void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color)
     }
 }
 
-void SGL::draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color) {
-    const char* ch = c;
-    for(; *ch != '\0'; ch++) {
-        draw_char(*ch, x, y);
+void SGL::draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color, bool wrap) {
+    for(; *c != '\0'; c++) {
+        draw_char(*c, x, y, color);
         x += 6;
     }
 }

@@ -19,7 +19,7 @@ int main()
     ThisThread::sleep_for(1s);
     SGLILI9341 display(PA_13, PA_14, PA_15, PC_12, PC_11, PC_10);
     display.init();
-    display.fill_screen(ILI9341_WHITE);
+    display.fill_screen(ILI9341_GREEN);
     t.start();
     /*
     display.set_active_window(50, 50, 150, 150);
@@ -36,6 +36,8 @@ int main()
     display.draw_char('A', 16, 10, ILI9341_BLACK);
     display.draw_char('D', 22, 10, ILI9341_BLACK);
     display.draw_char('A', 28, 10, ILI9341_BLACK);
+    display.draw_string("Hello world", 10, 17, ILI9341_BLACK);
+    display.draw_string("KONICZYNKA", 10, 24);
     t.stop();
     int f = t.elapsed_time().count();
     char bff[20];
