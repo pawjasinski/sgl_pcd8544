@@ -4,18 +4,17 @@
 SGLPCD8544::SGLPCD8544(PinName DC, PinName CE, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK, PinName BL)
     : SGL(LCD_WIDTH, LCD_HEIGHT), dc(DC, 0), ce(CE, 1), rst(RST, 0), bl(BL, 0), spi(SPI_MOSI, SPI_MISO, SPI_SCK)
 {
+    spi.format(LCD_SPI_BITS, LCD_SPI_MODE);
+    spi.frequency(LCD_SPI_CLOCK);
     reset();
-    init();
-    clear_buffer();
-    set_bias(0x03);
-    set_contrast(60);
 }
 
 void SGLPCD8544::init()
 {
-    spi.format(LCD_SPI_BITS, LCD_SPI_MODE);
-    spi.frequency(LCD_SPI_CLOCK);
     normal_display();
+    clear_buffer();
+    set_bias(0x03);
+    set_contrast(60);
 }
 
 void SGLPCD8544::reset()
@@ -52,6 +51,7 @@ void SGLPCD8544::send_command(uint8_t cmd)
     ce.write(0);
     spi.write(cmd);
     ce.write(1);
+    //dc.write(1);
 }
 
 void SGLPCD8544::draw_pixel(uint16_t x, uint16_t y, uint16_t color, Mode mode)
@@ -95,7 +95,7 @@ void SGLPCD8544::display()
 {
     dc.write(1); // stan na high dla przesylania danych
     ce.write(0);
-    for (unsigned i = 0; i < 504; ++i)
+    for (unsigned i = 0; i < LCD_BYTES; ++i)
     {
         spi.write(lcd_buffer[i]);
     }
