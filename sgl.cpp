@@ -355,6 +355,8 @@ void SGL::draw_char2(char c, uint16_t x, uint16_t y, uint16_t color) // for the 
 // lub cos usunac ta linie z char gdzie wystepuje i ja szcztucznie dorysowywac
 // w creatorze fontow mozna je wszystkie przysnapowac do lewej, nastepnie na podstawie szerokosci narysowac i dododac space z prawej
 // lub dodawac tylko w draw sring, chociaz chyba w draw char bedzie prosciej
+// moze stworzyc klase, strukture, statyczna strukture, jedna tabela zawiera tylko szerokosci znakow, druga zawiera bitmapy
+// od razu dodac wysokosc i ile bajtow wychodzi na kolumne
 {
     if( c < 32 || c > 127)
         return;
