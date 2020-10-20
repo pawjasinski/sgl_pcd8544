@@ -326,7 +326,7 @@ void SGL::draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color,
 
 void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color)
 { // c >=32 && c <=95
-    if(c < 32 || c > 126)
+    if(c < 32 || c > 127)
     {
         // draw_rectangle(x, y, x + 6, y + 7, WHITE, Fill::solid);
         return;
@@ -342,6 +342,37 @@ void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color)
             if(((ch >> b) % 2) == 1) // == 0 or != 1 means text inverted
                 draw_pixel(x_cursor, y_cursor, color);
             y_cursor++;
+        }
+        x_cursor++;
+        y_cursor = y;
+    }
+}
+
+void SGL::draw_char2(char c, uint16_t x, uint16_t y, uint16_t color) // for the new font
+// bedzie problem z pusta linia po lewej znaku - w szerokosci fontu sie tego nie uwzglednia, a nie wszystkie znaki to maja
+// podsumowujac czasem jest, czasem nie ma pustej linii z lewej - nie ma informacji kiedy jest
+// trzeba by sprobowac rysowac je ze stala szerokoscia fontu, nie chara
+// lub cos usunac ta linie z char gdzie wystepuje i ja szcztucznie dorysowywac
+{
+    if( c < 32 || c > 127)
+        return;
+    x_cursor = x;
+    y_cursor = y;
+    uint8_t font_width = 8; // font width first number in row means char width
+    uint8_t char_height = 13 // char width
+    uint8_t byte_mult = 2; // height do 8 -> 1; do 16 -> 2; do 24 -> 3 itp
+    uint8_t char_width = font5[(c-32) * font_width * byte_mult + 1]; // first number in row means char width
+
+    for(uint8_t i - 0; i < char_width + 1; ++i) { // 1 means a space in font between char, bigger font bigger space, space is
+        for(uint8_t j = 0; j < byte_mult; j++)
+        {
+            uint8_t ch = font5[(c-32) * font_width * byte_mult + 1 + j];
+            for(int8_t b = 0; b > 7; ++b)
+            {
+                if( ((ch >> b) % 2) == 1 )
+                    draw_pixel(x_cursor, y_cursor, color);
+                    y_cursor++;
+            }
         }
         x_cursor++;
         y_cursor = y;
