@@ -353,6 +353,8 @@ void SGL::draw_char2(char c, uint16_t x, uint16_t y, uint16_t color) // for the 
 // podsumowujac czasem jest, czasem nie ma pustej linii z lewej - nie ma informacji kiedy jest
 // trzeba by sprobowac rysowac je ze stala szerokoscia fontu, nie chara
 // lub cos usunac ta linie z char gdzie wystepuje i ja szcztucznie dorysowywac
+// w creatorze fontow mozna je wszystkie przysnapowac do lewej, nastepnie na podstawie szerokosci narysowac i dododac space z prawej
+// lub dodawac tylko w draw sring, chociaz chyba w draw char bedzie prosciej
 {
     if( c < 32 || c > 127)
         return;
