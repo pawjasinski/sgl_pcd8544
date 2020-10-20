@@ -60,7 +60,7 @@ public:
     //void draw_char(char c, uint16_t x, uint16_t y, uint16_t color = WHITE, bool invert = false);
     void set_font(char* font, uint16_t color = WHITE, bool invert = false, bool background = false, uint16_t color_bg = BLACK);
     void draw_char(char c, uint16_t x, uint16_t y, uint16_t color = WHITE);
-    void daw_char2(char c, uint16_t x, uint16_t y, uint16_t color = WHITE);
+    void draw_char2(char c, uint16_t x, uint16_t y, uint16_t color = WHITE);
     void draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color = WHITE, bool wrap = true);
 
 protected:

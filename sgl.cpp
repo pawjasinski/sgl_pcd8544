@@ -1,4 +1,5 @@
 #include "sgl.h"
+#include "debug.h"
 #include <cstdint>
 #include <cstring>
 
@@ -362,20 +363,23 @@ void SGL::draw_char2(char c, uint16_t x, uint16_t y, uint16_t color) // for the 
         return;
     x_cursor = x;
     y_cursor = y;
-    uint8_t font_width = 8; // font width first number in row means char width
-    uint8_t char_height = 13 // char width
+    uint8_t font_width = 12; // font width first number in row means char width
+    uint8_t char_height = 12; // char width
     uint8_t byte_mult = 2; // height do 8 -> 1; do 16 -> 2; do 24 -> 3 itp
-    uint8_t char_width = font5[(c-32) * font_width * byte_mult + 1]; // first number in row means char width
+    uint8_t char_width = Arial12x12[(c-32) * (font_width * byte_mult + 1)]; // first number in row means char width
+    sprintf(serial_buffer, "char width: %d \n", char_width);
+    serial_port.write(serial_buffer,100);
 
-    for(uint8_t i - 0; i < char_width + 1; ++i) { // 1 means a space in font between char, bigger font bigger space, space is
-        for(uint8_t j = 0; j < byte_mult; j++)
+    for(uint8_t i = 1; i < char_width * byte_mult + 2; i += byte_mult) // 1 means a space in font between char, bigger font bigger space, space is
+    {
+        for(int j = 0; j < byte_mult; j++)
         {
-            uint8_t ch = font5[(c-32) * font_width * byte_mult + 1 + j];
-            for(int8_t b = 0; b > 7; ++b)
+            uint8_t ch =Arial12x12[(c-32) * (font_width * byte_mult + 1) + i + j];
+            for(int8_t b = 0; b < 8; ++b)
             {
-                if( ((ch >> b) % 2) == 1 )
+                if(((ch >> b) % 2) == 0) // == 0 or != 1 means text inverted
                     draw_pixel(x_cursor, y_cursor, color);
-                    y_cursor++;
+                y_cursor++;
             }
         }
         x_cursor++;
@@ -385,7 +389,7 @@ void SGL::draw_char2(char c, uint16_t x, uint16_t y, uint16_t color) // for the 
 
 void SGL::draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color, bool wrap) {
     for(; *c != '\0'; c++) {
-        draw_char(*c, x, y, color);
-        x += 6;
+        draw_char2(*c, x, y, color);
+        x += Arial12x12[(*c-32) * (12 * 2 + 1)] + 1; // kolejny powod, zeby to jakos opakowac, moze podac paramatry na poczatku tabeli?
     }
 }

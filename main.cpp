@@ -1,6 +1,7 @@
 //#include "sgl_pcd8544.h"
 #include "sgl_ili9341.h"
 #include "mbed.h"
+#include "debug.h"
 #include "USBSerial.h"
 #include <cstdio>
 
@@ -9,13 +10,13 @@
 // wysylanie po koleji send_data, oraz jako funkcji z buforem i liczba do wyslania send_data(command, bufor, dlugosc);
 // przetestowac rowniez w ten sam sposob wysylanie interfejsem 16 i 8 bitowym. Rezultaty zapisac i porownac,
 // czy sie oplaca modyfikowac kod
-static UnbufferedSerial serial_port(USBTX, USBRX, 9600);
 
 // main() runs in its own thread in the OS
 int main()
 {
+    serial_port.write("Begin\n", 6);
     Timer t;
-    serial_port.write("hello\n", 6);
+    //serial_port.write("hello\n", 6);
     ThisThread::sleep_for(1s);
     SGLILI9341 display(PA_13, PA_14, PA_15, PC_12, PC_11, PC_10);
     display.init();
@@ -32,17 +33,12 @@ int main()
     for(int i = 20; i <30; ++i)
         display.draw_vertical_line(i, 0, 319, 0x001F);
     */
-    display.draw_char('B', 10, 10, ILI9341_BLACK);
-    display.draw_char('A', 16, 10, ILI9341_BLACK);
-    display.draw_char('D', 22, 10, ILI9341_BLACK);
-    display.draw_char('A', 28, 10, ILI9341_BLACK);
-    display.draw_string("Hello world", 10, 17, ILI9341_BLACK);
-    display.draw_string("KONICZYNKA", 10, 24);
+    display.draw_string("ABCDEFGHIJK   abcdefghijk", 10, 17, ILI9341_BLACK);
     t.stop();
     int f = t.elapsed_time().count();
     char bff[20];
-    sprintf(bff, "Czas to %d \n", f);
-    serial_port.write(bff, 20);
+    //sprintf(bff, "Czas to %d \n", f);
+    //serial_port.write(bff, 20);
     while (true)
     {
         ThisThread::sleep_for(chrono::seconds(1));
