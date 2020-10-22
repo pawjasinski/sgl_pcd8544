@@ -325,31 +325,7 @@ void SGL::draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color,
     }
 }
 
-void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color)
-{ // c >=32 && c <=95
-    if(c < 32 || c > 127)
-    {
-        // draw_rectangle(x, y, x + 6, y + 7, WHITE, Fill::solid);
-        return;
-    }
-    x_cursor = x;
-    y_cursor = y;
-    for(int8_t i = 0; i < 6; ++i)
-    {
-        uint8_t ch = font5[6 * (c-32) + i];
-
-        for(int8_t b = 0; b < 7; ++b)
-        {
-            if(((ch >> b) % 2) == 1) // == 0 or != 1 means text inverted
-                draw_pixel(x_cursor, y_cursor, color);
-            y_cursor++;
-        }
-        x_cursor++;
-        y_cursor = y;
-    }
-}
-
-void SGL::draw_char2(char c, uint16_t x, uint16_t y, uint16_t color) // for the new font
+void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color) // for the new font
 // bedzie problem z pusta linia po lewej znaku - w szerokosci fontu sie tego nie uwzglednia, a nie wszystkie znaki to maja
 // podsumowujac czasem jest, czasem nie ma pustej linii z lewej - nie ma informacji kiedy jest
 // trzeba by sprobowac rysowac je ze stala szerokoscia fontu, nie chara
@@ -363,10 +339,9 @@ void SGL::draw_char2(char c, uint16_t x, uint16_t y, uint16_t color) // for the 
         return;
     x_cursor = x;
     y_cursor = y;
-    uint8_t font_width = 12; // font width first number in row means char width
-    uint8_t char_height = 12; // char width
-    uint8_t byte_mult = 2; // height do 8 -> 1; do 16 -> 2; do 24 -> 3 itp
-    uint8_t char_width = Arial12x12[(c-32) * (font_width * byte_mult + 1)]; // first number in row means char width
+    font_width = 12; // font width first number in row means char width
+    byte_mult = 2; // height do 8 -> 1; do 16 -> 2; do 24 -> 3 itp
+    uint8_t char_width = get_char_width(c); // first number in row means char width
     sprintf(serial_buffer, "char width: %d \n", char_width);
     serial_port.write(serial_buffer,100);
 
@@ -374,7 +349,7 @@ void SGL::draw_char2(char c, uint16_t x, uint16_t y, uint16_t color) // for the 
     {
         for(int j = 0; j < byte_mult; j++)
         {
-            uint8_t ch =Arial12x12[(c-32) * (font_width * byte_mult + 1) + i + j];
+            uint8_t ch = get_char_width(c);
             for(int8_t b = 0; b < 8; ++b)
             {
                 if(((ch >> b) % 2) == 0) // == 0 or != 1 means text inverted
@@ -387,9 +362,16 @@ void SGL::draw_char2(char c, uint16_t x, uint16_t y, uint16_t color) // for the 
     }
 }
 
-void SGL::draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color, bool wrap) {
+void SGL::draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color, bool invert, bool wrap)
+{
     for(; *c != '\0'; c++) {
-        draw_char2(*c, x, y, color);
-        x += Arial12x12[(*c-32) * (12 * 2 + 1)] + 1; // kolejny powod, zeby to jakos opakowac, moze podac paramatry na poczatku tabeli?
+        if(*c > 126) draw_char((char)127, x, y, color);
+        draw_char(*c, x, y, color);
+        x += Arial12x12[(*c-32) * (font_width * 2 + 1)] + 1; // kolejny powod, zeby to jakos opakowac, moze podac paramatry na poczatku tabeli?
     }
+}
+
+uint8_t SGL::get_char_width(unsigned char c)
+{
+    font_arr[(c-32) * (font_width * byte_mult + 1)];
 }

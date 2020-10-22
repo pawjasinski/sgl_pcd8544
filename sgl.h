@@ -57,17 +57,23 @@ public:
     void draw_triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
                        uint16_t color = WHITE, Fill fill = Fill::hole, Mode mode = Mode::pixel_copy);
     void draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color = WHITE, Fill fill = Fill::hole, Mode mode = Mode::pixel_copy);
-    //void draw_char(char c, uint16_t x, uint16_t y, uint16_t color = WHITE, bool invert = false);
-    void set_font(char* font, uint16_t color = WHITE, bool invert = false, bool background = false, uint16_t color_bg = BLACK);
-    void draw_char(char c, uint16_t x, uint16_t y, uint16_t color = WHITE);
-    void draw_char2(char c, uint16_t x, uint16_t y, uint16_t color = WHITE);
-    void draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color = WHITE, bool wrap = true);
+    void set_font(char* font, uint16_t color = WHITE);
+    void draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color = WHITE, bool invert = false , bool wrap = true);
 
 protected:
+    void draw_char(char c, uint16_t x, uint16_t y, uint16_t color = WHITE);
+    uint8_t get_char_width(unsigned char c);
+
     uint16_t _width;
     uint16_t _height;
     uint16_t x_cursor;
     uint16_t y_cursor;
+    uint16_t font_color;
+    uint16_t font_bg_color;
+    const uint16_t* font_arr;
+    uint8_t font_width;
+    uint8_t font_height;
+    uint8_t byte_mult;
 };
 
 #endif // __SGL_H__
