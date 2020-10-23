@@ -6,25 +6,26 @@
 *   lst number '~' = 126 ASCII number
 */
 #include "mbed.h"
+#include <cstdint>
 
 class SGLFont
 {
 private:
-    SGLFont() {}
 public:
-    static SGLFont& get_instance()
+    SGLFont(uint8_t _width, uint8_t font_height, uint8_t _byte_mult, char first, char last,const uint8_t* array):
+        font_width(_width), font_height(font_height), byte_mult(_byte_mult), first_char(first), last_char(last), font_array(array)
     {
-        static  SGLFont instance;
-        return instance;
     }
-    inline uint8_t get_char_width(char c) { return font_array[(c-32) * (font_width * byte_mult + 1)]; }
- 
+
+    inline uint8_t get_char_width(char c) { return font_array[(c-first_char) * (font_width * byte_mult + 1)]; }
+    inline uint8_t get_char_width(const char* c) { return font_array[(*c-first_char) * (font_width * byte_mult + 1)]; }
+    
     uint8_t font_width;
     uint8_t font_height;
     char first_char;
     char last_char;
     uint8_t byte_mult; // number of bytes in one column e.g. height<=8 - one byte, height>8 && height<=16 two bytes
-    uint8_t* font_array;
+    const uint8_t* font_array;
     SGLFont(const SGLFont&) = delete;
     void operator=(const SGLFont&) = delete;
 };

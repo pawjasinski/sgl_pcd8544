@@ -3,6 +3,7 @@
 #include "mbed.h"
 #include "debug.h"
 #include "USBSerial.h"
+#include "fonts/Arial12x12.h"
 #include <cstdio>
 
 // Przetestowac, czy CE moze byc zawsze "0" w spi (PIN ce podlaczony do gnd) - sprawdzone, dziala
@@ -39,6 +40,8 @@ int main()
     char bff[20];
     //sprintf(bff, "Czas to %d \n", f);
     //serial_port.write(bff, 20);
+    Arial12x12Font g;
+    display.set_font(static_cast<SGLFont*>(&g));
     while (true)
     {
         ThisThread::sleep_for(chrono::seconds(1));

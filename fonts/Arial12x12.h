@@ -101,11 +101,17 @@ const uint8_t Arial12x12[] = {
         0x03, 0xFF, 0x03, 0x01, 0x02, 0xFF, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00   // Code for char 
         };
 
-        SGLFont& Font_Arial12x12 = SGLFont::get_instance();
-        // you can change this parameters if you need
+        class Arial12x12Font : public SGLFont
+        {
+        public:
+            Arial12x12Font():SGLFont(12, 12, 2, 32, 127, Arial12x12) {}
+        };
         //font_width = 12;
         //font_height = 12;
         //byte_mult = 2;
         //first_char = 32;
         //last_char = 127;
+
+
+
         #endif // __ARIAL_12X12_H__

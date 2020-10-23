@@ -339,17 +339,17 @@ void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color) // for the n
         return;
     x_cursor = x;
     y_cursor = y;
-    font_width = 12; // font width first number in row means char width
-    byte_mult = 2; // height do 8 -> 1; do 16 -> 2; do 24 -> 3 itp
-    uint8_t char_width = get_char_width(c); // first number in row means char width
+    _font->font_width = 12; // font width first number in row means char width
+    _font->byte_mult = 2; // height do 8 -> 1; do 16 -> 2; do 24 -> 3 itp
+    uint8_t char_width = _font->get_char_width(c); // first number in row means char width
     sprintf(serial_buffer, "char width: %d \n", char_width);
     serial_port.write(serial_buffer,100);
 
-    for(uint8_t i = 1; i < char_width * byte_mult + 2; i += byte_mult) // 1 means a space in font between char, bigger font bigger space, space is
+    for(uint8_t i = 1; i < char_width * _font->byte_mult + 2; i += _font->byte_mult) // 1 means a space in font between char, bigger font bigger space, space is
     {
-        for(int j = 0; j < byte_mult; j++)
+        for(int j = 0; j < _font->byte_mult; j++)
         {
-            uint8_t ch = get_char_width(c);
+            uint8_t ch = _font->get_char_width(c);
             for(int8_t b = 0; b < 8; ++b)
             {
                 if(((ch >> b) % 2) == 0) // == 0 or != 1 means text inverted
@@ -367,11 +367,6 @@ void SGL::draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color, boo
     for(; *c != '\0'; c++) {
         if(*c > 126) draw_char((char)127, x, y, color);
         draw_char(*c, x, y, color);
-        x += Arial12x12[(*c-32) * (font_width * 2 + 1)] + 1; // kolejny powod, zeby to jakos opakowac, moze podac paramatry na poczatku tabeli?
+        x += _font->get_char_width(c);
     }
-}
-
-uint8_t SGL::get_char_width(unsigned char c)
-{
-    font_arr[(c-32) * (font_width * byte_mult + 1)];
 }
