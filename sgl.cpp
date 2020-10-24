@@ -339,20 +339,17 @@ void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color) // for the n
         return;
     x_cursor = x;
     y_cursor = y;
-    _font->font_width = 12; // font width first number in row means char width
-    _font->byte_mult = 2; // height do 8 -> 1; do 16 -> 2; do 24 -> 3 itp
+    c = c - _font->first_char;
     uint8_t char_width = _font->get_char_width(c); // first number in row means char width
-    sprintf(serial_buffer, "char width: %d \n", char_width);
-    serial_port.write(serial_buffer,100);
 
-    for(uint8_t i = 1; i < char_width * _font->byte_mult + 2; i += _font->byte_mult) // 1 means a space in font between char, bigger font bigger space, space is
+    for(uint8_t i = 1 ; i < char_width * _font->byte_mult + 1 ; i += _font->byte_mult)
     {
         for(int j = 0; j < _font->byte_mult; j++)
         {
-            uint8_t ch = _font->get_char_width(c);
-            for(int8_t b = 0; b < 8; ++b)
+            uint8_t ch = _font->font_array[c*(_font->font_width*_font->byte_mult+1) + i + j];
+            for(int8_t b = 0; b < 8; ++b) // powyzej pewnej wysokosci tekstu nie rysuj(zle wyglada przy text inverted)
             {
-                if(((ch >> b) % 2) == 0) // == 0 or != 1 means text inverted
+                if(((ch >> b) % 2) == 1) // == 0 or != 1 means text inverted
                     draw_pixel(x_cursor, y_cursor, color);
                 y_cursor++;
             }
@@ -367,6 +364,6 @@ void SGL::draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color, boo
     for(; *c != '\0'; c++) {
         if(*c > 126) draw_char((char)127, x, y, color);
         draw_char(*c, x, y, color);
-        x += _font->get_char_width(c);
+        x += _font->get_char_width(*c-32) + 1;
     }
 }
