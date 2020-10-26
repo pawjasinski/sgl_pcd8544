@@ -325,7 +325,7 @@ void SGL::draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color,
     }
 }
 
-void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color) // for the new font
+void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color, bool invert = false) // for the new font
 // bedzie problem z pusta linia po lewej znaku - w szerokosci fontu sie tego nie uwzglednia, a nie wszystkie znaki to maja
 // podsumowujac czasem jest, czasem nie ma pustej linii z lewej - nie ma informacji kiedy jest
 // trzeba by sprobowac rysowac je ze stala szerokoscia fontu, nie chara
@@ -349,7 +349,7 @@ void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color) // for the n
             uint8_t ch = _font->font_array[c*(_font->font_width*_font->byte_mult+1) + i + j];
             for(int8_t b = 0; b < 8; ++b) // powyzej pewnej wysokosci tekstu nie rysuj(zle wyglada przy text inverted)
             {
-                if(((ch >> b) % 2) == 1) // == 0 or != 1 means text inverted
+                if(((ch >> b) % 2) == !invert) // == 0 or != 1 means text inverted
                     draw_pixel(x_cursor, y_cursor, color);
                 y_cursor++;
             }
@@ -361,9 +361,22 @@ void SGL::draw_char(char c, uint16_t x, uint16_t y, uint16_t color) // for the n
 
 void SGL::draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color, bool invert, bool wrap)
 {
+    uint8_t xx = x;
+    uint8_t yy = y;
     for(; *c != '\0'; c++) {
-        if(*c > 126) draw_char((char)127, x, y, color);
-        draw_char(*c, x, y, color);
+        if(x > _width - _font->get_char_width(*c-32))
+        {
+            x == xx;
+            y += _font->font_height;
+        }
+        if(*c > 126)
+        {
+            draw_char((char)127, x, y, color)
+        }
+        else
+        {
+            draw_char(*c, x, y, color, invert);
+        }
         x += _font->get_char_width(*c-32) + 1;
     }
 }

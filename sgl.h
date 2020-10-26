@@ -59,7 +59,8 @@ public:
     void draw_circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color = WHITE, Fill fill = Fill::hole, Mode mode = Mode::pixel_copy);
     inline void set_font(SGLFont* font) { _font = font; }
     void draw_string(const char* c, uint16_t x, uint16_t y, uint16_t color = WHITE, bool invert = false , bool wrap = true);
-    void draw_char(char c, uint16_t x, uint16_t y, uint16_t color = WHITE);
+    void draw_char(char c, uint16_t x, uint16_t y, uint16_t color = WHITE, bool invert = false);
+    // void draw_bitmap(uint8_t* bitmap, uint8_t x, uint8_t y, uint8_t width, uint_8t height); //for sglili9341 uint16_t
 
 protected:
 
