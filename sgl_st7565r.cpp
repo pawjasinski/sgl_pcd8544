@@ -1,4 +1,5 @@
 #include "sgl_st7565r.h"
+#include <chrono>
 
     /* Start Initial Sequence ----------------------------------------------------
     
@@ -95,7 +96,34 @@ void SGLST7565::init()
 
 void SGLST7565::reset()
 {
-    ;
+    send_command(0xE2);   //  sw reset
+    ThisThread::sleep_for(chrono::milliseconds(10));
+    
+    send_command(0xAE);   //  display off
+    
+    send_command(0xA2);   //  bias voltage (1/9)
+  //  wr_cmd8(0xA3);   //  bias voltage (1/7)
+
+    //wr_cmd8(0xA0);   // ADC select seg0-seg131
+    send_command(0xA1);   // ADC select seg223-seg0
+    //wr_cmd8(0xC8);   // SHL select com63-com0
+    send_command(0xC0);   // SHL select com0-com63
+
+    send_command(0x2C);   //   Boost ON
+    ThisThread::sleep_for(chrono::milliseconds(10));
+    send_command(0x2E);   //   Voltage Regulator ON
+    ThisThread::sleep_for(chrono::milliseconds(10));
+    send_command(0x2F);   //   Voltage Follower ON
+    ThisThread::sleep_for(chrono::milliseconds(10));
+    send_command(0x20|0x05);   //  Regulor_Resistor_Select resistor ratio 20-27, look at your display specific init code
+    set_contrast(0x20);
+    //wr_cmd8(0x81);   //  set contrast (reference voltage register set)
+    //wr_cmd8(0x15);   //  contrast 00-3F
+    
+    send_command(0xA4);   //  LCD display ram (EntireDisplayOn disable)
+    send_command(0x40);   // start line = 0
+    send_command(0xA6);     // display normal (1 = illuminated)
+    send_command(0xAF);     // display ON
 }
 
 void SGLST7565::send_data(uint8_t data)

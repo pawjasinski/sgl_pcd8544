@@ -2,7 +2,7 @@
 #include <cstdint>
 
 SGLILI9341::SGLILI9341(PinName DC, PinName ce, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK)
-    : SGL(LCD_WIDTH, LCD_HEIGHT), dc(DC, 1), ce(ce, 1), rst(RST, 1), spi(SPI_MOSI, SPI_MISO, SPI_SCK)
+    : SGL(LCD_WIDTH, LCD_HEIGHT), dc(DC, 1), ce(ce, 0), rst(RST, 1), spi(SPI_MOSI, SPI_MISO, SPI_SCK)
 {
     spi.format(16, 3);
     spi.frequency(LCD_SPI_CLOCK);
