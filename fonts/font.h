@@ -18,18 +18,19 @@ public:
     {
     }
 
-    inline uint8_t get_char_width(char c) { return font_array[(c) * (font_width * byte_mult + 1)]; }
-    inline uint8_t get_char_width(const char* c) { return font_array[(*c) * (font_width * byte_mult + 1)]; }
+    inline uint8_t get_char_width(char c) { return font_array[(c) * (font_width * byte_mult + 1)] + 1; }
+    inline uint8_t get_char_width(const char* c) { return font_array[(*c) * (font_width * byte_mult + 1)] + 1; }
 
-    uint8_t font_width;
-    uint8_t font_height;
-    char first_char;
-    char last_char;
+    uint8_t font_width; // max width
+    uint8_t font_height;// max height
+    char first_char;    // first char in table
+    char last_char;     // last char in table
     uint8_t byte_mult; // number of bytes in one column e.g. height<=8 - one byte, height>8 && height<=16 two bytes
     const uint8_t* font_array;
     uint16_t color;
     bool wrap;
     bool invert;
+    uint8_t space;
 
     SGLFont(const SGLFont&) = delete;
     void operator=(const SGLFont&) = delete;

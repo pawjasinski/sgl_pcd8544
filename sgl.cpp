@@ -340,7 +340,7 @@ void SGL::draw_char(char c, uint16_t x, uint16_t y) // for the new font
     x_cursor = x;
     y_cursor = y;
     c = c - _font->first_char;
-    uint8_t char_width = _font->get_char_width(c-32); // first number in row means char width
+    uint8_t char_width = _font->get_char_width(c); // first number in row means char width
     for(uint8_t i = 1 ; i < char_width * _font->byte_mult; i += _font->byte_mult)
     {
         for(int j = 0; j < _font->byte_mult; j++)
@@ -351,7 +351,7 @@ void SGL::draw_char(char c, uint16_t x, uint16_t y) // for the new font
                 off = _font->byte_mult * 8 - _font->font_height;
             }
             uint8_t ch = _font->font_array[c*(_font->font_width*_font->byte_mult+1) + i + j];
-            for(int8_t b = 0; b < 8; ++b) // for(int8_t b = 0; b < 8-off; ++b) cos sie pieprzy
+            for(int8_t b = 0; b < 8 - off; ++b) //
             {
                 if(((ch >> b) % 2) == !_font->invert) // == 0 or != 1 means text inverted
                     draw_pixel(x_cursor, y_cursor, _font->color);
