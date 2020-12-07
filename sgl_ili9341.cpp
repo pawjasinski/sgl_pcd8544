@@ -78,6 +78,13 @@ void SGLILI9341::fill_screen(uint16_t color)
     }
 }
 
+void SGLILI9341::fill_screen2(uint16_t color)
+{
+    set_active_window(0, 0, _width - 1, _height - 1);
+    dc.write(1);
+    spi.write(color, 240*320);
+}
+
 void SGLILI9341::draw_horizontal_line(uint16_t x, uint16_t y, int16_t len, uint16_t color, SGL::Mode mode)
 {
     if(len == 0) return;
@@ -92,16 +99,19 @@ void SGLILI9341::draw_horizontal_line(uint16_t x, uint16_t y, int16_t len, uint1
         set_active_window(x, y, x1, y);
         len--;
         dc.write(1);
-        while(len++)
-        spi.write(color);
+        //while(len++)
+        //spi.write(color);
+        len = abs(len);
+        spi.write(color, len);
     }
     else
     {
         set_active_window(x, y, x1, y);
         len++;
         dc.write(1);
-        while(len--)
-        spi.write(color);
+        //while(len--)
+        //spi.write(color);
+        spi.write(color,len);
     }
 }
 

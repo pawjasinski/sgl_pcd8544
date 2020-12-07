@@ -99,9 +99,12 @@ public:
     void draw_pixel(uint16_t x, uint16_t y, uint16_t color = ILI9341_WHITE, Mode mode = Mode::pixel_copy) override;
     void set_active_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
     void fill_screen(uint16_t color = WHITE);
+    void fill_screen2(uint16_t color = WHITE); // much faster than "fill_screen"
     // len is like x0 = x; x1 = x + len
     void draw_horizontal_line(uint16_t x, uint16_t y, int16_t len, uint16_t color = ILI9341_WHITE, Mode mode = SGL::Mode::pixel_copy) override;
     void draw_vertical_line(uint16_t x, uint16_t y, int16_t len, uint16_t color = ILI9341_WHITE, Mode mode = SGL::Mode::pixel_copy) override;
+    void draw_horizontal_line2(uint16_t x, uint16_t y, int16_t len, uint16_t color = ILI9341_WHITE, Mode mode = SGL::Mode::pixel_copy);
+    void draw_vertical_line2(uint16_t x, uint16_t y, int16_t len, uint16_t color = ILI9341_WHITE, Mode mode = SGL::Mode::pixel_copy);
     void reset();
     void reset2();
     void set_rotation(uint8_t rot);
