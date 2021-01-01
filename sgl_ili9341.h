@@ -111,6 +111,7 @@ public:
     void invert_display(bool invert);
     void scroll_to(uint16_t h);
     void set_scroll_margins(uint16_t top, uint16_t bottom);
+    void draw_bitmap16(uint16_t* bitmap, uint16_t x, uint16_t y, uint16_t width, uint16_t height) override;
 //protected:
     bool wrapText = true; // zawijaj tekst
 

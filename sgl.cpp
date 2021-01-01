@@ -388,3 +388,23 @@ void SGL::draw_string(const char* c, uint16_t x, uint16_t y)
         x += _font->get_char_width(*c-32);
     }
 }
+
+void SGL::draw_bitmap16(uint16_t* bitmap, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+{
+    // TO DO CHECK IF THIS IS CORRECT
+    if(x >= _width)
+        x = _width - 1;
+    if(y >= _height)
+        y = _height - 1;
+    if((x + width) >= _width)
+        width = _width - x - 1;
+    if((y + _height) >= _height)
+        _height = _height - y - 1;
+        for(uint16_t i = 0; i <= width; i++)
+        {
+            for(uint16_t j = 0; j <= height; j++)
+            {
+                draw_pixel(i + x, j + x, *(bitmap + i + j * width));
+            }
+        }
+}

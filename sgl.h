@@ -46,6 +46,7 @@ public:
     };
 
     SGL(uint16_t w, uint16_t h) : _width(w), _height(h) {}
+    virtual ~SGL() {}
     virtual void draw_pixel(uint16_t x, uint16_t y, uint16_t color = WHITE, Mode mode = Mode::pixel_copy) = 0;
     void draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color = WHITE, Mode mode = Mode::pixel_copy);
     // wazne !!!!! w horizontal_line i odpowiednio vertical line len nalezy traktowac jako
@@ -60,7 +61,8 @@ public:
     inline void set_font(SGLFont* font) { _font = font; }
     void draw_string(const char* c, uint16_t x, uint16_t y);
     void draw_char(char c, uint16_t x, uint16_t y);
-    // void draw_bitmap(uint8_t* bitmap, uint8_t x, uint8_t y, uint8_t width, uint_8t height); //for sglili9341 uint16_t
+    // void draw_bitmap8(uint8_t* bitmap, uint8_t x, uint8_t y, uint8_t width, uint_8t height); //for sglili9341 uint16_t
+    virtual void draw_bitmap16(uint16_t* bitmap, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 
 protected:
 

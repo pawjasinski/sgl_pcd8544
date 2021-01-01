@@ -464,3 +464,19 @@ lcdWriteCommand(FRAME_RATE_CONTROL1);
 //setOrientation(PORTRAIT); //0x00
 //bg(bgcolor); //BLACK
 }
+
+void SGLILI9341::draw_bitmap16(uint16_t* bitmap, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+{
+    if(x >= _width)
+        x = _width - 1;
+    if(y >= _height)
+        y = _height - 1;
+    if((x + width) >= _width)
+        width = _width - x - 1;
+    if((y + _height) >= _height)
+        _height = _height - y - 1;
+
+    //spi.write16(bitmap, width*height);
+    // OR better
+    spi.write((char*)bitmap, sizeof(*bitmap)* width * height, NULL, NULL);
+}

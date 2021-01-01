@@ -1,3 +1,32 @@
+WAZNE:
+DODAC w SPI.h oraz SPI.cpp: (to klasy w mbed os, pliki można edytować, radzę nie ruszać istniejących funkcji, nowe za to można dodać)
+SPI.h: (po funkcji virtual int write(int value);)
+////////////////////////////////////////////
+virtual void write(int value, int howmany);
+////////////////////////////////////////////
+
+SPI.cpp:
+////////////////////////////////////////////
+void SPI::write(int value, int howmany)
+{
+    select();
+    for(int ii = 0; ii < howmany; ++ii)
+    {
+        spi_master_write(&_peripheral->spi, value);
+    }
+    deselect();
+}
+////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
 https://os.mbed.com/teams/GraphicsDisplay/code/UniGraphic/docs/tip/classST7565.html // strona ze sterownikiem st7565
 
 
