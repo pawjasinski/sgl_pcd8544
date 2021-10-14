@@ -1,10 +1,12 @@
 #include "sgl.h"
+#include "Callback.h"
 #include "debug.h"
 #include <cstdint>
 #include <cstring>
 
 void SGL::draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color, Mode mode)
 {
+    // check if parameters are in range
     if (x0 >= _width)
         x0 = _width - 1;
     if (x1 >= _width)
@@ -17,6 +19,7 @@ void SGL::draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t
     int16_t dx = abs(x1 - x0);
     int16_t dy = abs(y1 - y0);
 
+    // tutaj sprawdzam czy linia nie jest horizontal lub vertical
     if (dy == 0)
     {
         draw_horizontal_line(x0, y0, (x1 - x0), color, mode);
@@ -70,15 +73,22 @@ void SGL::draw_horizontal_line(uint16_t x, uint16_t y, int16_t len, uint16_t col
         x = _width - 1;
     if (y >= _height)
         y = _height - 1;
-    int16_t i = 0;
+    if((len + x) >= _width)
+    {
+        len = _width - x - 1;
+    }
+    if((len + x) < 0)
+    {
+        len = -x;
+    }
     if (len > 0)
     {
-        for (; i <= len; ++i)
+        for (int16_t i = 0; i < len; ++i)
             draw_pixel(x + i, y, color, mode);
     }
     else if (len < 0)
     {
-        for (; i >= len; --i)
+        for (int16_t i = 0; i > len; --i)
             draw_pixel(x + i, y, color, mode);
     }
 }
@@ -89,15 +99,22 @@ void SGL::draw_vertical_line(uint16_t x, uint16_t y, int16_t len, uint16_t color
         x = _width - 1;
     if (y >= _height)
         y = _height - 1;
-    int16_t i = 0;
+    if((len + y) >= _height)
+    {
+        len = _height - y -1;
+    }
+    if((len + y) < 0)
+    {
+        len = -y;
+    }
     if (len > 0)
     {
-        for (; i != len; ++i)
+        for (int16_t i = 0; i < len; ++i)
             draw_pixel(x, y + i, color, mode);
     }
     else if (len < 0)
     {
-        for (; i != len; --i)
+        for (int16_t i = 0; i > len; --i)
             draw_pixel(x, y + i, color, mode);
     }
 }
@@ -114,46 +131,21 @@ void SGL::draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uin
         y1 = _height - 1;
     int16_t dx = x1 - x0;
     int16_t dy = y1 - y0;
-    uint16_t tx;
-    uint16_t ty;
+    if(dx == 0 && dy == 0)
+    {
+        draw_pixel(x0, y0, color, mode);
+    }
 
     if (dx == 0)
     {
-        draw_vertical_line(x0, y0, dy);
+        draw_vertical_line(x0, y0, dy > 0 ? dy + 1 : dy - 1, color, mode);
         return;
     }
     if (dy == 0)
     {
-        draw_horizontal_line(x0, y0, dx);
+        draw_horizontal_line(x0, y0, dx > 0 ? dx + 1 : dx - 1, color, mode);
         return;
     }
-
-    if (dx > 0 && dy < 0)
-    {
-        ty = y0;
-        y0 = y1;
-        y1 = ty;
-    }
-
-    if (dx < 0 && dy > 0)
-    {
-        tx = x0;
-        x0 = x1;
-        x1 = tx;
-    }
-
-    if (dx < 0 && dy < 0)
-    {
-        tx = x1;
-        ty = y1;
-        x1 = x0;
-        y1 = y0;
-        x0 = tx;
-        y0 = ty;
-    }
-
-    dx = x1 - x0;
-    dy = y1 - y0;
 
     if (fill == Fill::hole)
     {
@@ -164,9 +156,14 @@ void SGL::draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uin
     }
     else if (fill == Fill::solid)
     {
+        if (dy < 0)
+        {
+            SWAPINT16(y0, y1);
+            dy = abs(dy);
+        }
         for (uint16_t i = 0; i <= dy; ++i)
         {
-            draw_horizontal_line(x0, y0 + i, dx, color, mode);
+            draw_line(x0, y0, x1, y0 + i, color, mode);
         }
     }
 }
@@ -199,18 +196,18 @@ void SGL::draw_triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint
         // Sort coordinates by Y order (y2 >= y1 >= y0)
         if (y0 > y1)
         {
-            _swap_int16_t(y0, y1);
-            _swap_int16_t(x0, x1);
+            SWAPINT16(y0, y1);
+            SWAPINT16(x0, x1);
         }
         if (y1 > y2)
         {
-            _swap_int16_t(y2, y1);
-            _swap_int16_t(x2, x1);
+            SWAPINT16(y2, y1);
+            SWAPINT16(x2, x1);
         }
         if (y0 > y1)
         {
-            _swap_int16_t(y0, y1);
-            _swap_int16_t(x0, x1);
+            SWAPINT16(y0, y1);
+            SWAPINT16(x0, x1);
         }
 
         if (y0 == y2)
@@ -254,7 +251,7 @@ void SGL::draw_triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint
             b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
             */
             if (a > b)
-                _swap_int16_t(a, b);
+                SWAPINT16(a, b);
             draw_horizontal_line(a, y, b - a + 1, color, mode);
         }
 
@@ -273,7 +270,7 @@ void SGL::draw_triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint
             b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
             */
             if (a > b)
-                _swap_int16_t(a, b);
+                SWAPINT16(a, b);
             draw_horizontal_line(a, y, b - a + 1, color, mode);
         }
     }
