@@ -397,11 +397,11 @@ void SGL::draw_bitmap16(uint16_t* bitmap, uint16_t x, uint16_t y, uint16_t width
         width = _width - x - 1;
     if((y + _height) >= _height)
         _height = _height - y - 1;
-        for(uint16_t i = 0; i <= width; i++)
+    for(uint16_t i = 0; i <= width; i++)
+    {
+        for(uint16_t j = 0; j <= height; j++)
         {
-            for(uint16_t j = 0; j <= height; j++)
-            {
-                draw_pixel(i + x, j + x, *(bitmap + i + j * width));
-            }
+            draw_pixel(i + x, j + x, *(bitmap + i + j * width));
         }
+    }
 }

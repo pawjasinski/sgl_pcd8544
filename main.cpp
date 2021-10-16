@@ -10,4 +10,9 @@
 // main() runs in its own thread in the OS
 int main()
 {
+    SGLILI9341 lcd(PA_13, PA_14, PA_15, PC_12, PC_11, PC_10);
+    lcd.reset();
+    lcd.draw_line(11, 11, 200, 200, ILI9341_GREEN);
+    lcd.draw_line(11, 12, 200, 201, ILI9341_GREEN);
+    lcd.fill_screen(ILI9341_GREEN);
 }
