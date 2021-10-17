@@ -3,6 +3,7 @@
 #include "sgl.h"
 #include <chrono>
 #include <cstdint>
+#include <cstdio>
 
 SGLILI9341::SGLILI9341(PinName DC, PinName ce, PinName RST, PinName SPI_MOSI, PinName SPI_MISO, PinName SPI_SCK)
     : SGL(LCD_WIDTH, LCD_HEIGHT), dc(DC, 1), ce(ce, 0), rst(RST, 1), spi(SPI_MOSI, SPI_MISO, SPI_SCK)
@@ -87,21 +88,20 @@ void SGLILI9341::fill_screen(uint16_t color)
 
 void SGLILI9341::fill_screen2(uint16_t color)
 {
-    for(int i = 0; i < 240; ++i)
+    set_active_window(0, 0, 239, 319);
+    for(int i = 0; i < 240*320; ++i)
     {
-        for(int j = 0; j < 320; ++j)
-        {
-            draw_pixel(i, j, color);
-        }
+        send_data(color);
     }
-    //spi.write(color, 240*320);
 }
-
+/*
 void SGLILI9341::draw_horizontal_line(uint16_t x, uint16_t y, int16_t len, uint16_t color, SGL::Mode mode)
 {
     if(len == 0) return;
-    if(x >= _width) x = _width - 1;
-    if(y >= _height) y = _height - 1;
+    if(x >= _width)
+        x = _width - 1;
+    if(y >= _height)
+        y = _height - 1;
     int16_t x1 = x + len;
     if(x1 >= _width) x1 = _width - 1;
     if(x1 < 0) x1 = 0;
@@ -111,22 +111,20 @@ void SGLILI9341::draw_horizontal_line(uint16_t x, uint16_t y, int16_t len, uint1
         set_active_window(x, y, x1, y);
         len--;
         dc.write(1);
-        //while(len++)
-        //spi.write(color);
-        len = abs(len);
-        //spi.write(color, len);
+        while(len++)
+            spi.write(color);
     }
     else
     {
         set_active_window(x, y, x1, y);
         len++;
         dc.write(1);
-        //while(len--)
-        //spi.write(color);
-        //spi.write(color,len);
+        while(len--)
+            spi.write(color);
     }
 }
-
+*/
+/*
 void SGLILI9341::draw_vertical_line(uint16_t x, uint16_t y, int16_t len, uint16_t color, SGL::Mode mode)
 {
     if(len == 0) return;
@@ -153,6 +151,7 @@ void SGLILI9341::draw_vertical_line(uint16_t x, uint16_t y, int16_t len, uint16_
             spi.write(color);
     }
 }
+*/
 
 void SGLILI9341::set_rotation(uint8_t rot)
 {

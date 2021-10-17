@@ -4,9 +4,13 @@
 #include "mbed.h"
 #include "font.h"
 #include <cstdint>
+#include "debug.h"
 
 #define BLACK 0x0000
 #define WHITE 0xFFFF
+
+//#define FILL_RECT_HOR
+#define FILLL_RECT_VER
 
 #ifndef SWAPINT16
 #define SWAPINT16(a, b) \

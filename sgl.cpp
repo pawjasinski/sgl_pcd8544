@@ -156,15 +156,27 @@ void SGL::draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uin
     }
     else if (fill == Fill::solid)
     {
+        #if defined(FILL_RECT_HOR)
+        if (dx < 0)
+        {
+            SWAPUINT16(x0, x1);
+            dx = abs(dx);
+        }
+        for (uint16_t i = 0; i <= dx; ++i)
+        {
+            draw_line(x0 + i, y0, x0 + i, y1, color, mode);
+        }
+        #elif defined(FILLL_RECT_VER)
         if (dy < 0)
         {
-            SWAPINT16(y0, y1);
+            SWAPUINT16(y0, y1);
             dy = abs(dy);
         }
         for (uint16_t i = 0; i <= dy; ++i)
         {
-            draw_line(x0, y0, x1, y0 + i, color, mode);
+            draw_line(x0, y0 + i, x1, y0 + i, color, mode);
         }
+        #endif
     }
 }
 
